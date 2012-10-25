@@ -1,0 +1,71 @@
+/* ===== IMPORT the Reset (incl. Normalize.css and HTML5 Boilerplate) ===== */
+@import url("reset.css");
+
+/* ===== Available MODERNIZR classes (for testing CSS3 support) ===== */
+.no-js{}
+.fontface{} 
+.backgroundsize{} 
+.borderimage{} 
+.borderradius{} 
+.boxshadow{} 
+.multiplebgs{} 
+.opacity{} 
+.textshadow{} 
+.generatedcontent{} 
+.csstransforms{} 
+.csstransitions{} 
+.audio{} 
+.video{} 
+.shiv{}
+.mq{}
+.cssclasses{}
+.teststyles{}
+.testprop{}
+.testallprops{}
+.prefixes{}
+.domprefixes{}
+.load{}
+
+/* ===== Other MODERNIZR classes (for applying IE fixes, etc.) ===== */
+.notie{}
+.ie{} 
+.ie6{} 
+.lte7{} 
+.lte8{}
+.lte9{}
+
+/* ===== GENERIC (grid, links, typography, etc) ===== */
+#no-js-message{display: none;visibility: hidden;height:0}
+.no-js #no-js-message{display: inline-block; visibility: visible;height:auto}
+
+body{}
+article{}
+section{}
+aside{}
+p{}
+
+a, a:visited{}
+a:hover{}
+a:active{}
+
+
+h1, h2, h3, h4, h5 {
+	font-family: "news-gothic-std-1","news-gothic-std-2","Arial Narrow", sans-serif;
+}
+
+/* ===== MOBILE FIRST (and base for IEs and other old browsers) ===== */
+
+
+
+
+/* ===== MEDIA QUERIES for modern, non-mobile browsers ===== */
+@media only screen and (min-width: 35em) {
+    /* do something */
+}
+
+
+/* ===== MEDIA QUERIES for RETINA and HIDPI displays ===== */
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5),
+       only screen and (min-resolution: 144dpi) {
+    /* do something */
+}
