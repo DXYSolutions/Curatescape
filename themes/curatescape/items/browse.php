@@ -1,7 +1,31 @@
-<?php head(array('title'=>'Browse Stories')); ?>
+<?php 
+$tag = ($_GET['tags'] ? $_GET['tags'] : null);
+$term = ($_GET['term'] ? $_GET['term'] : null);
+$query = ($_GET['search'] ? $_GET['search'] : null);
+$advanced = ($_GET['advanced'] ? true : false);
+
+if ( ($tag) && !($query) ) {
+	$title = 'Stories tagged "'.$tag.'"';
+}
+elseif ( ($term) && !($query) ) {
+	$title = 'Results for subject term "'.$term.'"';
+}
+elseif ($query) {
+	$title = (!($advanced) ? 'Search Results for "'.$query.'"':'Advanced Search Results');
+}	
+else{
+	$title = 'Browse Stories';
+}	
+head(array('title'=>$title)); 
+?>
 <div id="content">
 <section class="browse stories items">			
-
+	<h1><?php 
+	$title .= ( (total_results()) ? ': <span class="item-number">'.total_results().'</span>' : '');
+	echo $title; 
+	?></h1>
+		
+		
 	<div id="page-col-left">
 		<aside>
 		<!-- add left sidebar content here -->
@@ -11,24 +35,6 @@
 
 	<div id="primary" class="browse">
 	<section id="results">
-	
-		<h1><?php
-		$tag = ($_GET['tags'] ? $_GET['tags'] : null);
-		$query = ($_GET['search'] ? $_GET['search'] : null);
-		$advanced = ($_GET['advanced'] ? true : false);
-		
-		if ( ($tag) && !($query) ) {
-		echo 'Items tagged "'.$tag.'"';
-		}
-		elseif ($query) {
-		echo (!($advanced) ? 'Search Results for "'.$query.'"':'Advanced Search Results');
-		}	
-		else{
-		echo 'Browse Items';
-		}	
-		echo ': <span class="item-number">'.total_results().'</span>';
-		// echo (($query) ? '<span id="refine-search">['.link_to_advanced_search($text = 'refine search').']</span>' : '' )
-		?></h1>
 			
 		<nav class="secondary-nav" id="item-browse"> 
 			<ul>
