@@ -29,6 +29,7 @@
 
 <div id="content">
 <section class="browse subjects">
+<h1>Browse By Subject: (<?php echo count($result); ?> Headings)</h1>
 
 	<div id="page-col-left">
 		<aside>
@@ -39,8 +40,6 @@
 
 	<div id="primary-browse" class="browse">
 	<section id="subjects">
-
-      <h1>Browse By Subject: (<?php echo count($result); ?> Headings)</h1>
       
       	<nav class="secondary-nav" id="item-browse">
 	  		<ul>

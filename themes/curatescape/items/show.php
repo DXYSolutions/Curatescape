@@ -1,7 +1,7 @@
 <?php head(array('bodyid'=>'items','bodyclass'=>'show','title' => item('Dublin Core', 'Title'))); ?>
 <div id="content">
 <article class="story item show">
-
+<h1 class="item-title"><?php echo item('Dublin Core', 'Title'); ?></h1>
 
 	<div id="page-col-left" class="item">
 		<section class="meta">
@@ -30,7 +30,6 @@
 	
 	<div id="primary" class="show">
 		<section id="text">
-			<h1 class="item-title"><?php echo item('Dublin Core', 'Title'); ?></h1>
 								
 			<figure id="item-video" >
 				<?php mh_video_files();?>

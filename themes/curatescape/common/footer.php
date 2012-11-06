@@ -1,5 +1,5 @@
 <footer>
-	<nav id="primary-nav">
+	<nav id="footer-nav">
     	<ul class="navigation">
 	    	<?php echo mh_global_nav(); ?>
 	    </ul>

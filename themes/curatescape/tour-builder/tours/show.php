@@ -13,16 +13,19 @@ head( array( 'title' => $tourTitle, 'content_class' => 'horizontal-nav',
 
 <div id="content">
 <article class="tour show">
+<h1><?php echo $tourTitle; ?></h1>
 			
 	<div id="page-col-left">
 		<section id="tour-items">
 		<h3>Locations</h3>
 		  <div>
+		  <ul>
 	         <?php foreach( $tour->Items as $tourItem ): ?>
-		         <li><a href="<?php echo uri('/') ?>items/show/<?php echo $tourItem->id; ?>">
+		         <li><h3><a href="<?php echo uri('/') ?>items/show/<?php echo $tourItem->id; ?>">
 		         <?php echo $this->itemMetadata( $tourItem, 'Dublin Core', 'Title' ); ?>
-		         </a></li>
+		         </a></h3></li>
 	         <?php endforeach; ?>
+		  </ul>   
 		  </div>
 		</section>
 	</div>
@@ -30,7 +33,6 @@ head( array( 'title' => $tourTitle, 'content_class' => 'horizontal-nav',
 
 	<div id="primary" class="show">
     <section id="text">
-		<h1><?php echo $tourTitle; ?></h1>
 	
 		   <div id="tour-description">
 			    <h2>Description</h2>

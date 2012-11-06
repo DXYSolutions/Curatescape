@@ -4,6 +4,7 @@ head( array( 'title' => 'Tours', 'content_class' => 'horizontal-nav',
 ?>
 <div id="content">
 <section class="browse tour">			
+<h1>Browse Tours (<?php echo $total_records; ?> total)</h1>
 
 	<div id="page-col-left">
 		<aside>
@@ -15,7 +16,7 @@ head( array( 'title' => 'Tours', 'content_class' => 'horizontal-nav',
 	<div id="primary" class="browse">
 	<section id="results">
 	
-	<h1>Browse Tours (<?php echo $total_records; ?> total)</h1>
+	
 
     <?php 
     if( has_tours() ){

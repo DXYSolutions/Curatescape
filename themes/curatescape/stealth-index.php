@@ -1,5 +1,6 @@
-<!--STEALTH MODE-->
 <?php head(array('bodyid'=>'home','bodyclass'=>'stealth-mode')); ?>	
+<!--STEALTH MODE-->
+
 <div id="content">
 	
 		<section id="downloads">
@@ -11,10 +12,7 @@
 				
 			<section id="about">
 			<header>
-				<hgroup>
-				<h1>About</h1>
-				<h2><?php echo settings('site_title');?></h2>
-				</hgroup>
+				<h2>About</h2>
 			</header>
 			
 				<p><?php echo mh_about();?></p>		
@@ -22,7 +20,7 @@
 			</section>
 			
 			<section id="contact">
-			<header><h1>Contact</h1></header>
+			<header><h2>Contact</h2></header>
 			
 				<?php 
 				$contact_email = get_theme_option('contact_email');
@@ -43,7 +41,7 @@
 					
 					
 			<section id="donate">
-			<header><h1>Donate</h1></header>
+			<header><h2>Donate</h2></header>
 					
 				<p>Your donation helps us continue to provide the <?php echo settings('site_title');?> App. Future updates will include additional content, new features and more, but we will need your support. Help us keep this app free and continue to keep our history history alive.</p>
 	

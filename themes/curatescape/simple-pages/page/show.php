@@ -7,6 +7,7 @@ if (simple_pages_is_home_page(get_current_simple_page())) {
 
 <div id="content">
 <article class="page show">
+<h1><?php echo html_escape(simple_page('title')); ?></h1>
 
 	<div id="page-col-left">
 		<aside>
@@ -17,7 +18,6 @@ if (simple_pages_is_home_page(get_current_simple_page())) {
 
 	<div id="primary" class="show">
 		<section id="text">
-		    <h1><?php echo html_escape(simple_page('title')); ?></h1>
 		    <?php echo eval('?>' . simple_page('text')); ?>
 		</section>    
 	</div>

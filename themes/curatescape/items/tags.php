@@ -1,6 +1,7 @@
 <?php head(array('title'=>'Browse by Tag')); ?>
 <div id="content">
 <section class="browse tags">			
+<h1>Browse by Tag</h1>
 
 	<div id="page-col-left">
 		<aside>
@@ -12,7 +13,6 @@
 	<div id="primary" class="browse">
 	<section id="tags">
     
-	    <h1>Browse by Tag</h1>
 	    
 	    <nav class="secondary-nav" id="tag-browse"> 
 		    <ul>
