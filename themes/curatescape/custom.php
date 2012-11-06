@@ -1,6 +1,7 @@
 <?php 
-
-/** == Global navigation == **/
+/*
+** Global navigation
+*/
 function mh_global_nav(){		
 		return public_nav_main(array(
 				'Home' => uri('/'), 
@@ -8,20 +9,27 @@ function mh_global_nav(){
 				'Tours' => uri('/tour-builder/tours/browse/')));
 }
 
-/** == Get the correct logo for the page  == **/
+/*
+** Get the correct logo for the page
+** uses body class to differentiate between home, stealth-home, and other
+*/
 function mh_the_logo(){
 	if ( ($bodyid='home') && ($bodyclass='public') ) {
-	    return '<img src="'.mh_lg_logo_url().'" class="home" id="logo-img"/>';	
+	    return '<img src="'.mh_lg_logo_url().'" class="home" id="logo-img" alt="'.settings('site_title').'"/>';	
 	}elseif( ($bodyid='home') && ($bodyclass='stealth-mode') ){
-		return '<img src="'.mh_stealth_logo_url().'" class="stealth" id="logo-img"/>';		
+		return '<img src="'.mh_stealth_logo_url().'" class="stealth" id="logo-img" alt="'.settings('site_title').'"/>';		
 	}else{
-		return '<img src="'.mh_med_logo_url().'" class="inner" id="logo-img"/>';	
+		return '<img src="'.mh_med_logo_url().'" class="inner" id="logo-img" alt="'.settings('site_title').'"/>';	
 	}	
 }
 
-/* == Global Header == **/
+/*
+** Global header
+** includes nav, logo, search bar
+** site title h1 is visually hidden but included for semantic purposes and screen readers
+*/
 function mh_global_header(){
-	$html ='<h1>'.link_to_home_page().'</h1>';
+	$html ='<h1 id="site-title" class="visuallyhidden">'.link_to_home_page().'</h1>';
 	
 	$html .= '<nav id="primary-nav">';
     $html .= '<ul class="navigation">';
@@ -41,11 +49,13 @@ function mh_global_header(){
 	
 }
 
-// * == App store links on home == * //
+/*
+** App Store links on homepage
+*/
 function mh_appstore_downloads(){
 	if (get_theme_option('enable_app_links')){ 
 	
-		echo '<header><h2>Downloads</h2></header>';
+		echo '<header><h2 class="visuallyhidden">Downloads</h2></header>';
 		
 		$ios_link = get_theme_option('ios_link');
 		echo ($ios_link ? 
@@ -65,47 +75,77 @@ function mh_appstore_downloads(){
 }			
 
 
-// * == App store links in footer == * //
+/*
+** App Store links in footer
+*/
 function mh_appstore_footer(){
 		if (get_theme_option('enable_app_links')){ 
 					
 			$ios_link = get_theme_option('ios_link');
 			$android_link = get_theme_option('android_link');
-			if (($ios_link != false)||($android_link != false)) echo "Get the app: ";
-			
-			echo ($ios_link ? 
-			'<a id="apple" class="app-store" href="'.$ios_link.'">iPhone</a> ':'');
-			
-			
-			echo ($android_link ? 
-			'<a id="android" class="app-store" href="'.$android_link.'">Android</a> ':'');
-							
-		}
+			if (($ios_link != false) && ($android_link == false)) {
+					echo 'Get the app for <a id="apple-text-link" class="app-store" href="'.$ios_link.'">iPhone</a>';
+					}
+			elseif (($ios_link == false) && ($android_link != false)) {
+					echo 'Get the app for <a id="apple-text-link" class="app-store" href="'.$android_link.'">Android</a>';
+					}
+			elseif (($ios_link != false)&&($android_link != false)) {
+					echo 'Get the app for <a id="apple-text-link" class="app-store" href="'.$ios_link.'">iPhone</a> and <a id="android-text-link" class="app-store" href="'.$android_link.'">Android</a>';
+					}
+				else{
+					echo 'Coming soon for iPhone and Android Devices';
+					}	
+		}			
 }	
 
-//Display map on item/show
+/*
+** map figure on items/show.php
+*/
 function mh_item_map(){
 if (function_exists('geolocation_get_location_for_item')){ 
 		    $location = geolocation_get_location_for_item($item, true);
 			$lng  = (double) $location['longitude'];
             $lat  = (double) $location['latitude'];
             echo geolocation_public_show_item_map();
-            echo '<a target="_blank" href="http://maps.google.com/maps?q='.$lat.','.$lng.'">View in Google Maps</a></li>'; }           
+            echo '<a target="_blank" href="http://maps.google.com/maps?q='.$lat.','.$lng.'">View in Google Maps</a>'; }           
 }
-//Display item images
+
+
+/*
+** Loop through and display image files
+*/
 function mh_item_images(){
 	echo '<h3>Photos</h3>';
 	while ($file = loop_files_for_item()):
 			if ($file->hasThumbnail()) {
 				//
-				$query = item_file('Dublin Core', 'Description');
-				$query = preg_replace("/(<br\s*\/?>\s*)+/", "<br><br>", $query); // remove excess <br> tags!
-				$photoDesc = mh_normalize_special_characters($query);
+				$photoDesc = mh_normalize_special_characters(item_file('Dublin Core', 'Description'));
+				$photoTitle = mh_normalize_special_characters(item_file('Dublin Core', 'Title'));
+				$photoCaption= $photoTitle.': '.$photoDesc;
+				$photoCaption = strip_tags($photoCaption);
+				?>
+				<script>
+				function hideText(){
+					jQuery(".fancybox-title").fadeOut();
+				}	
+				jQuery(".fancybox").fancybox({
+					//padding:0,
+			        beforeShow: function () {
+			            if (this.title) {
+			                // Add caption close button
+			                this.title += '<a style="float:right; display:block; cursor: pointer; border: 1px dotted #777;padding: 0 .5em; margin-left:.75em;" class="fancybox-hide-text" onclick="hideText()">Hide Text</a> ';
+			            }	            
+			        },
+				    helpers : {
+				         title: {
+				            type: 'over'
+				        }
+				    }
+				});
+				</script>    
+				<?php
 				//
-				$query = item_file('Dublin Core', 'Title');
-				$photoTitle = mh_normalize_special_characters($query); 
-				//
-				echo display_file($file, array('linkAttributes'=>array('rel'=>'clearbox[gallery=Photo Gallery,,comment='.$photoDesc.',,title='.$photoTitle.']')));
+				echo display_file($file, array('linkAttributes'=>array('title'=>$photoCaption, 'class'=>'fancybox', 'rel'=>'group'),'imgAttributes'=>array('alt'=>$photoTitle) ) );
 		
 			} else {
 			// do something with non-images here?
@@ -114,55 +154,52 @@ function mh_item_images(){
 }
 
 
-// Loop through and display audio files
+/*
+** Loop through and display audio files
+** FYI: adding "controls" to html <audio> tag causes a 
+** display error when used in combination w/ Fancybox 
+** image viewer 
+*/
 function mh_audio_files(){
 $audioTypes = array('audio/mpeg'); 
 $myaudio = array(); 
 	while ($file = loop_files_for_item()):
+
 		$mime = item_file('MIME Type');
 		
 		//echo $mime;
 
 		if ( array_search($mime, $audioTypes) !== false ) {
 			
-			if ($index==0) echo '<h3>Audio Files</h3>';
+			if ($index==0) echo '<h3>Audio Files</h3><script>audiojs.events.ready(function() {var as = audiojs.createAll();});</script>';
 			$index++;
 			
 			array_push($myaudio, $file);
 			
 
-		echo '<p><span class="audio-title">'.item_file('Dublin Core', 'Title').'</span><br/><span class="audio-caption">'.item_file('Dublin Core', 'Description').'</span></p>';
+			echo '<p class="audio-meta"><span class="audio-title">'.item_file('Dublin Core', 'Title').'</span><br/><span class="audio-caption">'.item_file('Dublin Core', 'Description').'</span></p>';
 	
-
-		$msie = strpos($_SERVER["HTTP_USER_AGENT"], 'MSIE') ? true : false; 
-		$firefox = strpos($_SERVER["HTTP_USER_AGENT"], 'Firefox') ? true : false;
-		$safari = strpos($_SERVER["HTTP_USER_AGENT"], 'Safari') ? true : false;
-		$chrome = strpos($_SERVER["HTTP_USER_AGENT"], 'Chrome') ? true : false;
-		$opera = strpos($_SERVER["HTTP_USER_AGENT"], 'Opera') ? true : false;
-
-
-
-		if (($firefox == 'true')||($msie == 'true')||($opera == 'true')){
-			
-			//do something with flash or something
-		
-		} else {
-		// html5 audio for browsers that can play mp3s
-		echo '<audio controls="controls">
+			echo '<audio>
 			<source src="'.file_download_uri($file).'" type="audio/mpeg" />
 			<h5 class="no-audio"><strong>Download Audio:</strong><a href="'.file_download_uri($file).'">MP3</a></h5>
 			</audio>';
-				}
-		}
-						
+		}	
+					
 	endwhile; 
 }
 
 
-//Display video files
+/*
+** Loop through and display video files
+** Please use H.264 video format
+** Browsers that do not support H.264 will fallback to Flash
+** We accept multiple H.264-related MIME-types because Omeka MIME detection is sometimes spotty
+** But in the end, we always tell the browser they're looking at "video/mp4"
+** Opera and Firefox are currently the key browsers that need flash here, but that may change
+*/
 function mh_video_files() {
 	$videoIndex = 1;
-	$videoTypes = array('video/mp4','video/mpeg','video/quicktime');
+	$videoTypes = array('video/mp4','video/mpeg','video/quicktime'); 
 	$videoPoster = mh_poster_url();
 	
 	while(loop_files_for_item()): 
@@ -174,8 +211,8 @@ function mh_video_files() {
 				
 		
 		if ( in_array($videoMime,$videoTypes) ){
-			$html = '<video width="100%" height="auto" id="video-'.$videoIndex.'" controls="controls" poster="'.$videoPoster.'" class="'.$videoClass.'">';
-			$html .= '<source src="'.$videoFile.'" type="'.$videoMime.'">';
+			$html = '<video width="640" height="360" id="video-'.$videoIndex.'" class="'.$videoClass.' video-js vjs-default-skin" controls poster="'.$videoPoster.'"  preload="auto" data-setup="{}">';
+			$html .= '<source src="'.$videoFile.'" type="video/mp4">'; 
 			$html .= '</video>';	
 			echo $html;	
 			$videoIndex++;
@@ -183,7 +220,10 @@ function mh_video_files() {
 	endwhile;
 }
 
-//Display subjects as links
+/*
+** Display subjects as links
+** These links are hard to validate via W3 for some reason
+*/
 function mh_subjects(){
 $subjects = item('Dublin Core', 'Subject', 'all');
 		if (count($subjects) > 0){
@@ -191,9 +231,13 @@ $subjects = item('Dublin Core', 'Subject', 'all');
 	    	echo '<h3>Subject</h3>';
 	    	echo '<div class="subjects"><ul>';
 	    	foreach ($subjects as $subject){
-		    	echo '<li>';
-		    	echo '<a href="'.WEB_ROOT.'/items/browse?search=&advanced[0][element_id]=49&advanced[0][type]=contains&advanced[0][terms]='.$subject.'&submit_search=Search">'.$subject.'</a>';
-		    	echo '</li>';
+	    		$link = WEB_ROOT;
+	    		$link .= htmlentities('/items/browse?term='); 
+	    		$link .= rawurlencode($subject);
+	    		$link .= htmlentities('&search=&advanced[0][element_id]=49&advanced[0][type]=contains&advanced[0][terms]=');
+	    		$link .= rawurlencode($subject);
+	    		$link .= htmlentities('&submit_search=Search');
+		    	echo '<li><a href="'.$link.'">'.$subject.'</a></li>';
 		    	}
 		    echo '</ul></div>';
 
@@ -201,10 +245,13 @@ $subjects = item('Dublin Core', 'Subject', 'all');
 }
 
 
-//Display nav items for Simple Pages sidebar (not currently very useful, but we might add some novel content later)
+/*
+Display nav items for Simple Pages sidebar 
+** (not currently very useful, but we might add some novel content later)
+*/
 function mh_sidebar_nav(){
 	
-	return mh_global_nav();
+	return '<ul>'.mh_global_nav().'</ul>';
 	
 }
 
@@ -230,7 +277,9 @@ function mh_item_relations(){
 
 
 
-//Display the item tags
+/*
+** Display the item tags
+*/
 function mh_tags(){		
 		if (item_has_tags()): 
 		
@@ -244,7 +293,9 @@ function mh_tags(){
 		endif;
 }
 
-//Display related links
+/*
+** Display related links
+*/
 function mh_related_links(){
     $relations = item('Dublin Core', 'Relation', array('all' => true));
     if ($relations){
@@ -256,7 +307,9 @@ function mh_related_links(){
     }	
 }
 
-
+/*
+** Display the AddThis social sharing widgets
+*/
 function mh_share_this(){
 	$addthis = (get_theme_option('Add This')) ? (get_theme_option('Add This')) : 'ra-4e89c646711b8856';
 	
@@ -274,7 +327,9 @@ function mh_share_this(){
 }
 
 
-/** -- GET THE TOUR LIST -- **/
+/*
+** Display the Tours list
+*/
 function mh_display_tour_items($num = 15){
 	
     // Get the database.
@@ -306,6 +361,10 @@ function mh_display_tour_items($num = 15){
 	return $items;
 }
 
+
+/*
+** JSON tour list output
+*/
 function toursList() {
 	// Start with an empty array of tours
 	$all_tours_metadata = array();
@@ -330,59 +389,95 @@ function toursList() {
 	echo Zend_Json_Encoder::encode( $metadata );
 }
 
-
+/*
+** Display random featured item
+** Used on homepage
+*/
 function mh_display_random_featured_item($withImage=false)
  {
     $featuredItem = random_featured_item($withImage);
- 	$html = '<h2 class="col-heading">Featured Story</h2>';
+ 	$html = '<h2>Featured Story</h2>';
  	if ($featuredItem) {
  	    $itemTitle = item('Dublin Core', 'Title', array(), $featuredItem);
         
  	  
  	   if (item_has_thumbnail($featuredItem)) {
- 	       $html .= '<div class="thumb">' . link_to_item(item_square_thumbnail(array(), 0, $featuredItem), array('class'=>'image'), 'show', $featuredItem) . '</div>';
+ 	       $html .= '<div class="item-image">' . link_to_item(item_square_thumbnail(array(), 0, $featuredItem), array(), 'show', $featuredItem) . '</div>';
  	   }
  	   
+ 	   $html .= '<div class="item-text">';
  	   $html .= '<h3>' . link_to_item($itemTitle, array(), 'show', $featuredItem) . '</h3>';
  	   
  	   // Grab the 1st Dublin Core description field (first 150 characters)
  	   if ($itemDescription = item('Dublin Core', 'Description', array('snippet'=>150), $featuredItem)) {
- 	       $html .= '<p class="item-description">' . $itemDescription . '</p><p class="view-items-link">'. link_to_item('More about '.$itemTitle, array(), 'show', $featuredItem) .'</p>';
-       }
- 	} else {
+ 	       $html .= '<div class="item-description">' . $itemDescription . '</div>';
+ 	       }else{
+ 	       $html .= '<p>Preview text not available.</p>';}
+ 	       
+ 	    $html .= '</div>';
+ 	    $html .= '<p class="view-items-link">'. link_to_item('More about '.$itemTitle, array(), 'show', $featuredItem) .'</p>';   
+       
+ 	}else {
  	   $html .= '<p>No featured items are available.</p>';
  	}
 
      return $html;
  }
- 
-function mh_display_recent_item($withImage=false)
- {
-    $recentItem = set_items_for_loop(recent_items(1));
- 	$html = '<h2>Recently Added</h2>';
- 	if ($recentItem) {
- 	    $itemTitle = item('Dublin Core', 'Title', array(), $recentItem);
-        
- 	   $html .= '<h3>' . link_to_item($itemTitle, array(), 'show', $recentItem) . '</h3>';
- 	   if (item_has_thumbnail($recentItem)) {
- 	       $html .= '<div class="thumb">' . link_to_item(item_square_thumbnail(array(), 0, $recentItem), array('class'=>'image'), 'show', $recentItem) . '</div>';
- 	   }
- 	   // Grab the 1st Dublin Core description field (first 150 characters)
- 	   if ($itemDescription = item('Dublin Core', 'Description', array('snippet'=>150), $recentItem)) {
- 	       $html .= '<p>' . $itemDescription . '</p>';
-       }
- 	} else {
- 	   $html .= '<p>No featured items are available.</p>';
- 	}
-     return $html;
- }
- 
+
+/*
+** Display the most recently added item
+** Used on homepage
+*/ 
+function mh_display_recent_item($num){
+		set_items_for_loop(recent_items($num)); 
+		if (has_items_for_loop()){ 
+			while (loop_items()){
+				echo '<div class="item-image">'.link_to_item(item_square_thumbnail()).'</div>';
+				
+				echo '<div class="item-text">';
+				
+				echo '<h3>'.link_to_item().'</h3>';
+				
+				if($desc = item('Dublin Core', 'Description', array('snippet'=>150))){ 
+					echo '<div class="item-description">'.$desc.'</div>';
+				}else{
+					echo '<div class="item-description">Text preview unavailable.</div>';
+					}
+					
+				echo '</div>';
+				
+				} 
+			}	
+} 
+
+/*
+** Display the customizable content on homepage
+** Currently user may choose to display Twitter or About content
+*/
+function mh_custom_column_home(){
+		if ( (get_theme_option('twitter_username')!=false) && (get_theme_option('home_column')!=='about')) {
+			echo '<h2>What Users Are Saying</h2>';
+			echo '<div id="twitter">';
+				echo '<ul>'.mh_get_tweets().'</ul>';
+			echo '</div>';
+			echo mh_follow_the_conversation(); 
+		 }else{
+			echo '<h2 class="col-heading">About</h2><p id="about">'.get_theme_option('about').'</p>';
+			}	
+}
+
+/*
+** Csutom CSS
+*/ 
 function mh_custom_css(){
 	return '<style type="text/css">
 	a, a:link {color:'.mh_link_color().'}'.get_theme_option('custom_css').
 	'</style>';
 }
 
+/*
+** Typekit script for header.php
+*/
 function mh_typekit(){
 	if(get_theme_option('typekit')){
 		$html ='<script type="text/javascript" src="http://use.typekit.com/'.get_theme_option('typekit').'.js"></script>';
@@ -391,6 +486,10 @@ function mh_typekit(){
 		}
 }
 
+/*
+** About text
+** Used on homepage (stealth and public)
+*/
 function mh_about($text=null){
     if (!$text) {
         // If the 'About Text' option has a value, use it. Otherwise, use default text  
@@ -404,7 +503,9 @@ function mh_about($text=null){
 
 
 
-
+/*
+** Google Analytics
+*/
 function mh_google_analytics($webPropertyID=null){
 	$webPropertyID= get_theme_option('google_analytics');
 	if ($webPropertyID!=null){
@@ -424,6 +525,9 @@ function mh_google_analytics($webPropertyID=null){
 	}
 }
 
+/*
+** Edit item link
+*/
 function link_to_item_edit()
 {
 $current = Omeka_Context::getInstance()->getCurrentUser();
@@ -435,6 +539,9 @@ $current = Omeka_Context::getInstance()->getCurrentUser();
                 }
 } 
 
+/*
+** <video> placeholder image
+*/
 function mh_poster_url()
 {
     $poster = get_theme_option('poster');
@@ -444,6 +551,9 @@ function mh_poster_url()
 	return $posterimg;
 }
 
+/*
+** Stealth Mode logo
+*/
 function mh_stealth_logo_url()
 {
     $stealth_logo = get_theme_option('stealth_logo');
@@ -453,6 +563,9 @@ function mh_stealth_logo_url()
 	return $logo_img;
 }
 
+/*
+** Main logo
+*/
 function mh_lg_logo_url()
 {
     $lg_logo = get_theme_option('lg_logo');
@@ -462,6 +575,9 @@ function mh_lg_logo_url()
 	return $logo_img;
 }
 
+/*
+** Medium logo
+*/
 function mh_med_logo_url()
 {
     $med_logo = get_theme_option('med_logo');
@@ -471,6 +587,9 @@ function mh_med_logo_url()
 	return $logo_img;
 }
 
+/*
+** Small logo
+*/
 function mh_nav_logo_url()
 {
     $nav_logo = get_theme_option('tiny_logo');
@@ -480,6 +599,9 @@ function mh_nav_logo_url()
 	return $logo_img;
 }
 
+/*
+** "Take a Tour" image file
+*/
 function mh_tour_logo_url()
 {
     $tour_logo = get_theme_option('tour_logo');
@@ -489,6 +611,9 @@ function mh_tour_logo_url()
 	return $logo_img;
 }
 
+/*
+** "Follow the conversation" image file
+*/
 function mh_follow_logo_url()
 {
     $follow_logo = get_theme_option('follow_logo');
@@ -498,6 +623,9 @@ function mh_follow_logo_url()
 	return $logo_img;
 }
 
+/*
+** Map pin file
+*/
 function mh_map_pin_logo_url()
 {
     $map_pin_logo = get_theme_option('map_pin');
@@ -507,6 +635,11 @@ function mh_map_pin_logo_url()
 	return $logo_img;
 }
 
+/*
+** Icon file for iOS devices
+** Used when the user saves a link to the website to their homescreen
+** May also be used by other iOS apps, including a few RSS Readers (e.g. Reeder)
+*/
 function mh_apple_icon_logo_url()
 {
     $apple_icon_logo = get_theme_option('apple_icon');
@@ -516,6 +649,9 @@ function mh_apple_icon_logo_url()
 	return $logo_img;
 }
 
+/*
+** Background image (home)
+*/
 function mh_bg_home_logo_url()
 {
     $bg_home_logo = get_theme_option('bg_home');
@@ -525,6 +661,9 @@ function mh_bg_home_logo_url()
 	return $logo_img;
 }
 
+/*
+** Background image (not home)
+*/
 function mh_bg_lv_logo_url()
 {
     $bg_lv_logo = get_theme_option('bg_lv');
@@ -534,6 +673,9 @@ function mh_bg_lv_logo_url()
 	return $logo_img;
 }
 
+/*
+** Custom link CSS color
+*/
 function mh_link_color()
 {
     $color = get_theme_option('link_color');
@@ -543,7 +685,35 @@ function mh_link_color()
 	}
 }
 
-/*TWITTER*/
+/*
+** iOS App ID
+** see mh_ios_smartbanner()
+*/
+function mh_app_id()
+{
+    $appID = (get_theme_option('ios_app_id')) ? get_theme_option('ios_app_id') : false;
+    
+    return $appID;
+}
+
+/*
+** iOS Smart Banner
+** Shown not more than once per day
+*/
+function mh_ios_smart_banner(){
+	// show the iOS Smart Banner once per day if the app ID is set
+	if (mh_app_id()!=false){
+		$AppBanner = 'Curatescape_AppBanner_'.mh_app_id();
+		if (!isset($_COOKIE[$AppBanner])){ 
+		 echo '<meta name="apple-itunes-app" content="app-id='.mh_app_id().'">';
+		 setcookie($AppBanner, true,  time()+86400); // 1 day
+		}  
+	}
+}	
+
+/*
+** Twitter
+*/
 
 function  mh_link_my_tweet($text){
 	$text= preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t< ]*)#", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $text);
@@ -556,7 +726,7 @@ function  mh_link_my_tweet($text){
 
 function mh_get_tweets(){
 
-	 $twitte = file_get_contents("http://search.twitter.com/search.json?q=".get_theme_option('twitter_hashtag')."%20OR%20%23".get_theme_option('twitter_hashtag')."&rpp=4");
+	 $twitte = file_get_contents("http://search.twitter.com/search.json?q=".get_theme_option('twitter_hashtag')."%20OR%20%23".get_theme_option('twitter_hashtag')."&amp;rpp=4");
 	 $data = json_decode($twitte);
 	 $o_text = "";
 	 foreach($data->results as $item)
@@ -577,8 +747,13 @@ function mh_get_tweets(){
 	 return $html;
  }
  
- /*UNWANTED CHARACTER STRIPPING */
- function mh_normalize_special_characters( $str ) 
+
+
+/*
+** Character normalization
+** Used to strip away unwanted or problematic formatting
+*/
+function mh_normalize_special_characters( $str ) 
 { 
     # Quotes cleanup 
     $str = str_replace( chr(ord("`")), "'", $str );        # ` 
@@ -594,7 +769,8 @@ function mh_get_tweets(){
                                 'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O', 'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U', 
                                 'Ú'=>'U', 'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss', 'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c', 
                                 'è'=>'e', 'é'=>'e', 'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o', 'ô'=>'o', 'õ'=>'o', 
-                                'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'ý'=>'y', 'þ'=>'b', 'ÿ'=>'y','&amp;'=>'&','height'=>'h&#101;ight' ); 
+                                'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'ý'=>'y', 'þ'=>'b', 'ÿ'=>'y'); 
+                                
     $str = strtr( $str, $unwanted_array ); 
     
     #For reasons yet unknown, only some servers may require an additional $unwanted_array item: 'height'=>'h&#101;ight'

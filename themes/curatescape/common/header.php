@@ -15,10 +15,13 @@
 <meta name="description" content="<?php echo settings('description'); ?>" />
 <meta name="keywords" content="<?php echo get_theme_option('meta_key') ;?>" /> 
 <meta name="viewport" content="width=device-width">
-
 <link rel="shortcut icon" href="<?php echo img('favicon.ico');?>"/>
-
 <?php echo auto_discovery_link_tag(); ?>
+
+<!-- Apple Stuff -->
+<link rel="apple-touch-icon-precomposed" href="<?php echo mh_apple_icon_logo_url();?>"/>
+<?php echo mh_ios_smart_banner(); ?>
+
 
 <?php 
 // Are we viewing the item record? If so, queue up the following JS and CSS...
@@ -26,7 +29,9 @@ $itemsShow = ( ($bodyid == 'items') && ($bodyclass == 'show') ) ? true : false;
 if($itemsShow){
 	queue_js('video-js/video.min');
 	queue_js('audiojs/audiojs/audio.min');
-	queue_css('video-js/video-js.min',$media,$conditional,'javascripts');
+	queue_js('fancybox/source/jquery.fancybox');
+	queue_css('fancybox/source/jquery.fancybox', 'all', $conditional, 'javascripts');
+	queue_css('video-js/video-js.min','all',$conditional,'javascripts');
 }
 // Are we viewing the stealth mode homepage? If so, queue up the following CSS...
 $stealthHome = ( ($bodyid == 'home') && ($bodyclass == 'stealth-mode') ) ? true : false;
@@ -49,6 +54,11 @@ display_css();
 <?php 
 queue_js('modernizr'); 
 display_js();
+
+if($itemsShow==true){    
+	echo '<script> _V_.options.flash.swf = "'. WEB_ROOT .'/themes/curatescape/javascripts/video-js/video-js.swf"</script>';
+	}
+
 ?>
 
 <!-- TypeKit -->
@@ -59,6 +69,9 @@ display_js();
 
 <!-- Plugin Stuff -->
 <?php echo plugin_header(); ?>
+
+
+
 
 </head>
 <body<?php echo $bodyid ? ' id="'.$bodyid.'"' : ''; ?><?php echo $bodyclass ? ' class="'.$bodyclass.'"' : ''; ?>> 
