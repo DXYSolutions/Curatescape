@@ -30,6 +30,10 @@ function mh_the_logo(){
 */
 function mh_global_header(){
 	$html ='<h1 id="site-title" class="visuallyhidden">'.link_to_home_page().'</h1>';
+
+    $html .= '<div id="logo">';
+    $html .= link_to_home_page(mh_the_logo());
+    $html .= '</div>';
 	
 	$html .= '<nav id="primary-nav">';
     $html .= '<ul class="navigation">';
@@ -38,16 +42,53 @@ function mh_global_header(){
     $html .= '</nav>';
     
     $html .= '<div id="search-wrap">';
-	$html .= simple_search(); 
-    $html .= '</div>';
-    
-    $html .= '<div id="logo">';
-    $html .= link_to_home_page(mh_the_logo());
+	$html .= mh_simple_search(); 
     $html .= '</div>';
     
     return $html;	
 	
 }
+
+
+/*
+** Modified search form
+** Adds HTML "placeholder" attribute
+** Adds HTML "type" attribute
+*/
+
+function mh_simple_search($buttonText = null, $formProperties=array('id'=>'simple-search'), $uri = null)
+{
+    if (!$buttonText) {
+        $buttonText = __('Search');
+    }
+
+    // Always post the 'items/browse' page by default (though can be overridden).
+    if (!$uri) {
+        $uri = apply_filters('simple_search_default_uri', uri('items/browse'));
+    }
+
+    $searchQuery = array_key_exists('search', $_GET) ? $_GET['search'] : '';
+    $formProperties['action'] = $uri;
+    $formProperties['method'] = 'get';
+    $html  = '<form ' . _tag_attributes($formProperties) . '>' . "\n";
+    $html .= '<fieldset>' . "\n\n";
+    $html .= __v()->formText('search', $searchQuery, array('type'=>'search','name'=>'search','class'=>'textinput','placeholder'=>'Search stories'));
+    $html .= __v()->formSubmit('submit_search', $buttonText);
+    $html .= '</fieldset>' . "\n\n";
+
+    // add hidden fields for the get parameters passed in uri
+    $parsedUri = parse_url($uri);
+    if (array_key_exists('query', $parsedUri)) {
+        parse_str($parsedUri['query'], $getParams);
+        foreach($getParams as $getParamName => $getParamValue) {
+            $html .= __v()->formHidden($getParamName, $getParamValue);
+        }
+    }
+
+    $html .= '</form>';
+    return $html;
+}
+
 
 /*
 ** App Store links on homepage
@@ -55,19 +96,19 @@ function mh_global_header(){
 function mh_appstore_downloads(){
 	if (get_theme_option('enable_app_links')){ 
 	
-		echo '<header><h2 class="visuallyhidden">Downloads</h2></header>';
+		echo '<header><h2>Downloads</h2></header>';
 		
 		$ios_link = get_theme_option('ios_link');
 		echo ($ios_link ? 
 		'<a id="apple" class="app-store" href="'.$ios_link.'">
-			<img src="'.img('app-store-badge.gif').'" alt="iPhone App Store" />
-		</a>':'');
+		iOS App Store
+		</a> ':'');
 		
 		$android_link = get_theme_option('android_link');
 		echo ($android_link ? 
 		'<a id="android" class="app-store" href="'.$android_link.'">
-			<img src="'.img('btn-android.png').'" alt="Google Play App Store" >
-		</a>':'');
+		Google Play
+		</a> ':'');
 		
 		if ( ($android_link != true) && ($ios_link !=true) ) echo "Coming Soon";
 		
@@ -107,9 +148,19 @@ if (function_exists('geolocation_get_location_for_item')){
 			$lng  = (double) $location['longitude'];
             $lat  = (double) $location['latitude'];
             echo geolocation_public_show_item_map();
-            echo '<a target="_blank" href="http://maps.google.com/maps?q='.$lat.','.$lng.'">View in Google Maps</a>'; }           
+            //echo '<a target="_blank" href="http://maps.google.com/maps?q='.$lat.','.$lng.'">View in Google Maps</a>'; 
+            }           
 }
 
+
+/*
+** author byline on items/show.php
+*/
+function mh_the_author(){
+	if ((get_theme_option('show_author') == true) && (item('Dublin Core', 'Creator'))){
+		echo '<span class="story-meta">by: '.item('Dublin Core', 'Creator').'</span>';
+	}
+}
 
 /*
 ** Loop through and display image files
@@ -133,13 +184,16 @@ function mh_item_images(){
 			        beforeShow: function () {
 			            if (this.title) {
 			                // Add caption close button
-			                this.title += '<a style="float:right; display:block; cursor: pointer; border: 1px dotted #777;padding: 0 .5em; margin-left:.75em;" class="fancybox-hide-text" onclick="hideText()">Hide Text</a> ';
+			                this.title += '<a class="fancybox-hide-text" onclick="hideText()">Hide Text</a> ';
 			            }	            
 			        },
 				    helpers : {
 				         title: {
 				            type: 'over'
-				        }
+				        },
+				         overlay : {
+				         	locked : false
+				         	}
 				    }
 				});
 				</script>    
@@ -171,7 +225,7 @@ $myaudio = array();
 
 		if ( array_search($mime, $audioTypes) !== false ) {
 			
-			if ($index==0) echo '<h3>Audio Files</h3><script>audiojs.events.ready(function() {var as = audiojs.createAll();});</script>';
+			if ($index==0) echo '<h3>Audio</h3><script>audiojs.events.ready(function() {var as = audiojs.createAll();});</script>';
 			$index++;
 			
 			array_push($myaudio, $file);
@@ -201,6 +255,7 @@ function mh_video_files() {
 	$videoIndex = 1;
 	$videoTypes = array('video/mp4','video/mpeg','video/quicktime'); 
 	$videoPoster = mh_poster_url();
+	$videoHeading = (($videoIndex==1) ? '<h3>Video</h3>' : '');
 	
 	while(loop_files_for_item()): 
 		$file = get_current_file();
@@ -211,7 +266,7 @@ function mh_video_files() {
 				
 		
 		if ( in_array($videoMime,$videoTypes) ){
-			$html = '<video width="640" height="360" id="video-'.$videoIndex.'" class="'.$videoClass.' video-js vjs-default-skin" controls poster="'.$videoPoster.'"  preload="auto" data-setup="{}">';
+			$html = $videoHeading.'<video width="640" height="360" id="video-'.$videoIndex.'" class="'.$videoClass.' video-js vjs-default-skin" controls poster="'.$videoPoster.'"  preload="auto" data-setup="{}">';
 			$html .= '<source src="'.$videoFile.'" type="video/mp4">'; 
 			$html .= '</video>';	
 			echo $html;	
@@ -330,7 +385,7 @@ function mh_share_this(){
 /*
 ** Display the Tours list
 */
-function mh_display_tour_items($num = 15){
+function mh_display_tour_items($num = 5){
 	
     // Get the database.
     $db = get_db();
@@ -348,19 +403,25 @@ function mh_display_tour_items($num = 15){
     // Fetch some items with our select.
     $items = $table->fetchObjects($select);
     
-   // echo count($items);
-    $tot = count($items);
-   
-    echo "<ul>";
-    
-	for ($i = 0; $i < $tot; $i++) {
-    	echo "<li><a href='" . WEB_ROOT . "/tour-builder/tours/show/id/". $items[$i]['id']."'>" . $items[$i]['title'] . "</a></li>";
-	}
-	echo "</ul>";
+	   // echo count($items);
+	    $tot = count($items);
+	   
+	    echo "<h2>Take a Tour</h2>";
+	    
+	    echo "<ul>";
+	    
+		for ($i = 0; $i < $tot; $i++) {
+	    	echo "<li><a href='" . WEB_ROOT . "/tour-builder/tours/show/id/". $items[$i]['id']."'>" . $items[$i]['title'] . "</a></li>";
+		}
+		echo "</ul>";
+		
+		echo '<p class="view-more-link"><a href="'.WEB_ROOT.'/tour-builder/tours/browse/">View All Tours</a></p>';
 	
 	return $items;
 }
 
+		
+		
 
 /*
 ** JSON tour list output
@@ -397,29 +458,29 @@ function mh_display_random_featured_item($withImage=false)
  {
     $featuredItem = random_featured_item($withImage);
  	$html = '<h2>Featured Story</h2>';
+ 	$html .= '<article class="item-result">';
  	if ($featuredItem) {
  	    $itemTitle = item('Dublin Core', 'Title', array(), $featuredItem);
         
  	  
  	   if (item_has_thumbnail($featuredItem)) {
- 	       $html .= '<div class="item-image">' . link_to_item(item_square_thumbnail(array(), 0, $featuredItem), array(), 'show', $featuredItem) . '</div>';
+ 	       $html .= '<div class="item-thumb">' . link_to_item(item_fullsize(array(), 0, $featuredItem), array(), 'show', $featuredItem) . '</div>';
  	   }
  	   
- 	   $html .= '<div class="item-text">';
  	   $html .= '<h3>' . link_to_item($itemTitle, array(), 'show', $featuredItem) . '</h3>';
  	   
  	   // Grab the 1st Dublin Core description field (first 150 characters)
  	   if ($itemDescription = item('Dublin Core', 'Description', array('snippet'=>150), $featuredItem)) {
  	       $html .= '<div class="item-description">' . $itemDescription . '</div>';
  	       }else{
- 	       $html .= '<p>Preview text not available.</p>';}
+ 	       $html .= '<div class="item-description empty">Preview text not available.</div>';}
  	       
- 	    $html .= '</div>';
- 	    $html .= '<p class="view-items-link">'. link_to_item('More about '.$itemTitle, array(), 'show', $featuredItem) .'</p>';   
+ 	    $html .= '<p class="view-more-link">'. link_to_item('More about '.$itemTitle, array(), 'show', $featuredItem) .'</p>';   
        
  	}else {
  	   $html .= '<p>No featured items are available.</p>';
  	}
+ 	$html .= '</article>';
 
      return $html;
  }
@@ -428,26 +489,29 @@ function mh_display_random_featured_item($withImage=false)
 ** Display the most recently added item
 ** Used on homepage
 */ 
-function mh_display_recent_item($num){
+function mh_display_recent_item($num=1){
+		echo ($num <=1) ? '<h2>Newest Story</h2>' : '<h2>Newest Stories</h2>';
 		set_items_for_loop(recent_items($num)); 
 		if (has_items_for_loop()){ 
 			while (loop_items()){
-				echo '<div class="item-image">'.link_to_item(item_square_thumbnail()).'</div>';
-				
-				echo '<div class="item-text">';
+				echo '<article class="item-result">';
 				
 				echo '<h3>'.link_to_item().'</h3>';
+								
+				echo '<div class="item-thumb">'.link_to_item(item_square_thumbnail()).'</div>';
 				
-				if($desc = item('Dublin Core', 'Description', array('snippet'=>150))){ 
+				
+				if($desc = item('Dublin Core', 'Description', array('snippet'=>180))){ 
 					echo '<div class="item-description">'.$desc.'</div>';
 				}else{
 					echo '<div class="item-description">Text preview unavailable.</div>';
 					}
 					
-				echo '</div>';
+				echo '</article>';
 				
 				} 
-			}	
+			}
+			echo '<p class="view-more-link">'.link_to_browse_items('View All Stories').'</p>';
 } 
 
 /*
