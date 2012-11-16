@@ -10,7 +10,6 @@ $tourTitle = 'Add Item To Tour #' . tour( 'id' ) . $tourTitle;
 head( array( 'title' => $tourTitle, 'content_class' => 'vertical-nav',
    'bodyclass' => 'tours primary' ) );
 ?>
-<div id="primary">
 <table id="items" class="simple" cellspacing="0" cellpadding="0">
    <thead>
       <tr>
@@ -42,5 +41,5 @@ head( array( 'title' => $tourTitle, 'content_class' => 'vertical-nav',
       <?php endforeach; ?>
    </tbody>
 </table>
-</div>
+
 <?php foot();
