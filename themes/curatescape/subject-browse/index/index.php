@@ -1,4 +1,4 @@
-<?php head(array('title'=>'Browse Items by Subject','bodyid'=>'subject-browse','bodyclass' => 'subject-browse current')); ?>
+<?php head(array('title'=>'Browse Items by Subject','bodyid'=>'subject-browse','bodyclass' => 'subject-browse browse current')); ?>
 <script type="text/javascript">
     jQuery.noConflict();
     jQuery(document).ready(function(){
@@ -29,7 +29,7 @@
 
 <div id="content">
 <section class="browse subjects">
-<h1>Browse By Subject: (<?php echo count($result); ?> Headings)</h1>
+<h1>Browse By Subject</h1>
 
 	<div id="page-col-left">
 		<aside>
@@ -38,7 +38,7 @@
 	</div>
 
 
-	<div id="primary-browse" class="browse">
+	<div id="primary" class="browse">
 	<section id="subjects">
       
       	<nav class="secondary-nav" id="item-browse">

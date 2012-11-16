@@ -64,13 +64,15 @@ head(array('title'=>$title));
 			$titlelink=link_to_item(item('Dublin Core', 'Title'), array('class'=>'permalink'));
 			?>
 			<article class="item-result">
+			
+				<h3><?php echo $titlelink; ?></h3>
+				
 				<?php if (item_has_thumbnail()): ?>
 					<div class="item-thumb">
 	    				<?php echo $thumblink; ?>						
 	    			</div>
 				<?php endif; ?>
 
-				<h3><?php echo $titlelink; ?></h3>
 				
 				<?php if ($description): ?>
     				<div class="item-description">
