@@ -10,7 +10,7 @@
 		<br>
 		&copy; <?php echo date('Y').' '.settings('author');?> 
 		<br>
-		<?php mh_appstore_footer(); ?>
+		<span id="app-store-links"><?php mh_appstore_footer(); ?></span>
 	</p>
 
 	

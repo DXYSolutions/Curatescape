@@ -1,7 +1,7 @@
 <?php head(array('title'=>'403','bodyid'=>'403')); ?>
 <div id="content">
 <article class="error show">
-<h1>403</h1>
+<h2>403</h2>
 
 	<div id="page-col-left">
 		<aside>

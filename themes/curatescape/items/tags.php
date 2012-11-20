@@ -1,7 +1,7 @@
 <?php head(array('title'=>'Browse by Tag')); ?>
 <div id="content">
 <section class="browse tags">			
-<h1>Browse by Tag</h1>
+<h2>Tags: <?php echo total_tags();?></h2>
 
 	<div id="page-col-left">
 		<aside>
@@ -16,13 +16,7 @@
 	    
 	    <nav class="secondary-nav" id="tag-browse"> 
 		    <ul>
-			<?php 
-			if (function_exists('subject_browse_public_navigation_items')){
-			echo nav(array('Browse All' => uri('items'), 'Browse by Tag' => uri('items/tags'), 'Browse by Subject' => uri('items/subject-browse')));
-			}
-			else{
-			echo nav(array('Browse All' => uri('items'), 'Browse by Tag' => uri('items/tags')));
-			} ?>
+			<?php mh_item_browse_subnav(); ?>
 		    </ul>
 	    </nav>
 	

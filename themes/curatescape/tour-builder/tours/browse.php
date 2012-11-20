@@ -4,7 +4,7 @@ head( array( 'title' => 'Tours', 'content_class' => 'horizontal-nav',
 ?>
 <div id="content">
 <section class="browse tour">			
-<h1>Browse Tours: <?php echo $total_records; ?></h1>
+<h2>Browse Tours: <?php echo $total_records; ?></h2>
 
 	<div id="page-col-left">
 		<aside>

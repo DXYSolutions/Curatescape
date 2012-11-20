@@ -29,7 +29,7 @@
 
 <div id="content">
 <section class="browse subjects">
-<h1>Browse By Subject</h1>
+<h2>Subjects: <?php echo count($result);?></h2>
 
 	<div id="page-col-left">
 		<aside>
@@ -43,13 +43,7 @@
       
       	<nav class="secondary-nav" id="item-browse">
 	  		<ul>
-				<?php 
-				if (function_exists('subject_browse_public_navigation_items')){
-				echo nav(array('Browse All' => uri('items'), 'Browse by Tag' => uri('items/tags'), 'Browse by Subject' => uri('items/subject-browse')));
-				}
-				else{
-				echo nav(array('Browse All' => uri('items'), 'Browse by Tag' => uri('items/tags')));
-				} ?>
+		  		<?php mh_item_browse_subnav(); ?>
 			</ul>
       	</nav>
       	

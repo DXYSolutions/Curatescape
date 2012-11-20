@@ -14,16 +14,16 @@ elseif ($query) {
 	$title = (!($advanced) ? 'Search Results for "'.$query.'"':'Advanced Search Results');
 }	
 else{
-	$title = 'Browse Stories';
+	$title = 'All Stories';
 }	
 head(array('title'=>$title)); 
 ?>
 <div id="content">
 <section class="browse stories items">			
-	<h1><?php 
+	<h2><?php 
 	$title .= ( (total_results()) ? ': <span class="item-number">'.total_results().'</span>' : '');
 	echo $title; 
-	?></h1>
+	?></h2>
 		
 		
 	<div id="page-col-left">
@@ -38,19 +38,7 @@ head(array('title'=>$title));
 			
 		<nav class="secondary-nav" id="item-browse"> 
 			<ul>
-			<?php 
-			if (function_exists('subject_browse_public_navigation_items')){
-			echo nav(array(
-			'Browse All' => uri('items'), 
-			'Browse by Tag' => uri('items/tags'), 
-			'Browse by Subject' => uri('items/subject-browse')
-			));
-			}
-			else{
-			echo nav(array(
-			'Browse All' => uri('items'), 
-			'Browse by Tag' => uri('items/tags')));
-			} ?>
+			<?php echo mh_item_browse_subnav();?>
 			</ul>
 		</nav>
 		
@@ -63,11 +51,11 @@ head(array('title'=>$title));
 			$thumblink=link_to_item(item_square_thumbnail());
 			$titlelink=link_to_item(item('Dublin Core', 'Title'), array('class'=>'permalink'));
 			?>
-			<article class="item-result">
+			<article class="item-result" id="item-result-<?php echo $index;?>">
 			
 				<h3><?php echo $titlelink; ?></h3>
 				
-				<?php if (item_has_thumbnail()): ?>
+				<?php if (item_has_thumbnail() && mh_reducepayload($index,3)): ?>
 					<div class="item-thumb">
 	    				<?php echo $thumblink; ?>						
 	    			</div>
@@ -80,13 +68,16 @@ head(array('title'=>$title));
     				</div>
 				<?php endif; ?>
 
-				<?php if (item_has_tags()): ?>
+				<?php if (item_has_tags() && mh_reducepayload($index,3)): ?>
     				<div class="item-tags">
     				<p><span>Tags:</span> <?php echo $tags; ?></p>
     				</div>
 				<?php endif; ?>
 			</article> 
-		<?php endwhile; ?>
+		<?php 
+		$index++;
+		endwhile; 
+		?>
 		
 		<div class="pagination bottom"><?php echo pagination_links(); ?></div>
 				

@@ -13,7 +13,7 @@ head( array( 'title' => $tourTitle, 'content_class' => 'horizontal-nav',
 
 <div id="content">
 <article class="tour show">
-<h1><?php echo $tourTitle; ?></h1>
+<h2><?php echo $tourTitle; ?></h2>
 			
 	<div id="page-col-left">
 		<section id="tour-items">
