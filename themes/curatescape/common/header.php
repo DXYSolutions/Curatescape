@@ -51,14 +51,10 @@ display_css();
 <?php echo mh_custom_css(); ?>
 
 <!-- JavaScripts -->
-<?php 
+<?php
 queue_js('modernizr'); 
+queue_js('check-width');
 display_js();
-
-if($itemsShow==true){    
-	echo '<script> _V_.options.flash.swf = "'. WEB_ROOT .'/themes/curatescape/javascripts/video-js/video-js.swf"</script>';
-	}
-
 ?>
 
 <!-- TypeKit -->

@@ -141,15 +141,41 @@ function mh_appstore_footer(){
 
 /*
 ** map figure on items/show.php
+** uses Geolocation plugin data to create Google Map
+** re-uses data to add custom links to Google Maps, Bing Maps (WindowsPhone-only) and Apple Maps (iOS-only)
+** at the moment, these links only open a view of the lat-lon coordinates (no custom pins or query titles, etc)
+** TODO: make the links open into a more useful view by incorporating query params
 */
 function mh_item_map(){
-if (function_exists('geolocation_get_location_for_item')){ 
-		    $location = geolocation_get_location_for_item($item, true);
-			$lng  = (double) $location['longitude'];
-            $lat  = (double) $location['latitude'];
-            echo geolocation_public_show_item_map();
-            //echo '<a target="_blank" href="http://maps.google.com/maps?q='.$lat.','.$lng.'">View in Google Maps</a>'; 
-            }           
+	if (function_exists('geolocation_get_location_for_item')){
+		echo geolocation_public_show_item_map('100%', '10em'); 
+		$location = geolocation_get_location_for_item(get_current_item(), true);
+	    if ($location) {
+	        $lng = $location['longitude'];
+	        $lat = $location['latitude'];
+	        $zoom = ($location['zoom_level']) ? '&z='.$location['zoom_level'] : '';	
+	        $title = (item('Dublin Core','Title')) ? ''.str_replace("&","and", html_entity_decode(item('Dublin Core','Title'))).'' : '';
+	        $addr = ($location['address']) ? ' near '.str_replace("&","and", html_entity_decode($location['address'])).'' : '';
+	        $query = ($title || $addr) ? '&q='.$title.$addr : ''; // this is not quite generalizable so we won't use it
+	        $coords = $lat.','.$lng;        
+	        
+	        // Google Maps for all users
+	        $link = '<a class="item-map-link" href="http://maps.google.com/maps?q='.$coords.$zoom.'">View in Google Maps</a>';
+	        
+	        if (strpos($_SERVER['HTTP_USER_AGENT'], 'iPhone OS') !== false) { 
+	        // + Apple Maps for iOS users
+		        $link .= ' <a class="item-map-link" href="http://maps.apple.com/maps?ll='.$coords.$zoom.'">Open in iOS Maps</a>';
+		        };
+		        
+	        if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows Phone OS') !== false) { 
+	        // + Bing Maps for Windows Phone users
+		        $link .= ' <a class="item-map-link" href="http://bing.com/maps/default.aspx?cp='.str_replace(',','~',$coords).str_replace('z','lvl',$zoom).'&v=2">Open in Bing Maps</a>';
+		        };		        
+	        
+	        echo $link;
+	         
+	        }
+	}           
 }
 
 
@@ -163,48 +189,95 @@ function mh_the_author(){
 }
 
 /*
+** Return the current page URL
+*/
+function mh_current_page() {
+ $pageURL = 'http';
+ if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+ $pageURL .= "://";
+ if ($_SERVER["SERVER_PORT"] != "80") {
+  $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+ } else {
+  $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+ }
+ return $pageURL;
+}
+
+/*
+** Finds URLs in a given $string and
+** Adds zero-width spaces after special characters (really, just slash and dot)
+** This allows the long URLs to wrap more efficiently
+** Handy for when URLs are breaking responsive page design
+** Indended use: mh_wrappable_link(item_citation())
+** ...might need some revision for other uses
+*/
+function mh_wrappable_link($string){		
+	
+	/* Find a URL in the $string and build the replacement */
+	preg_match('/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/',$string, $matches);
+	$origURL = $matches[0];	
+	$newURL=$origURL;
+		$newURL=preg_replace('/\//','/&#8203;', $newURL); //replace slash with slash + zero-width-space
+		$newURL=preg_replace('/\./','.&#8203;', $newURL); //replace dot with dot + zero-width-space
+	
+	/* Apply the repalcement URL to the original string */
+	$string=preg_replace('/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/',$newURL, $string);
+	
+	return $string;
+} 
+
+
+/*
+** Custom item citation
+*/
+function mh_item_citation(){
+	return mh_wrappable_link(item_citation());
+}
+
+
+/*
 ** Loop through and display image files
 */
 function mh_item_images(){
 	echo '<h3>Photos</h3>';
-	while ($file = loop_files_for_item()):
-			if ($file->hasThumbnail()) {
-				//
-				$photoDesc = mh_normalize_special_characters(item_file('Dublin Core', 'Description'));
-				$photoTitle = mh_normalize_special_characters(item_file('Dublin Core', 'Title'));
-				$photoCaption= $photoTitle.': '.$photoDesc;
-				$photoCaption = strip_tags($photoCaption);
-				?>
-				<script>
-				function hideText(){
-					jQuery(".fancybox-title").fadeOut();
-				}	
-				jQuery(".fancybox").fancybox({
-					//padding:0,
-			        beforeShow: function () {
-			            if (this.title) {
-			                // Add caption close button
-			                this.title += '<a class="fancybox-hide-text" onclick="hideText()">Hide Text</a> ';
-			            }	            
+	while ($file = loop_files_for_item()){
+		if ($file->hasThumbnail()) {
+			//
+			$photoDesc = mh_normalize_special_characters(item_file('Dublin Core', 'Description'));
+			$photoTitle = mh_normalize_special_characters(item_file('Dublin Core', 'Title'));
+			$photoCaption= $photoTitle.': '.$photoDesc;
+			$photoCaption = strip_tags($photoCaption);
+			?>
+			<script>
+			function hideText(){
+				jQuery(".fancybox-title").fadeOut();
+			}	
+			jQuery(".fancybox").fancybox({
+		        beforeShow: function () {
+		            if (this.title) {
+		                // Add caption close button
+		                this.title += '<a class="fancybox-hide-text" onclick="hideText()">Hide Text</a> ';
+		            }	            
+		        },
+			    helpers : {
+			         title: {
+			            type: 'over'
 			        },
-				    helpers : {
-				         title: {
-				            type: 'over'
-				        },
-				         overlay : {
-				         	locked : false
-				         	}
-				    }
-				});
-				</script>    
-				<?php
-				//
-				echo display_file($file, array('linkAttributes'=>array('title'=>$photoCaption, 'class'=>'fancybox', 'rel'=>'group'),'imgAttributes'=>array('alt'=>$photoTitle) ) );
-		
-			} else {
-			// do something with non-images here?
-			}
-	endwhile; 
+			         overlay : {
+			         	locked : false
+			         	}
+			    }
+			});
+			</script>    
+			<?php
+			echo display_file($file, array('imageSize' => 'fullsize','linkAttributes'=>array('title'=>$photoCaption, 'class'=>'fancybox', 'rel'=>'group'),'imgAttributes'=>array('alt'=>$photoTitle) ) );
+			$html = '';
+			$html .= ($photoTitle) ? '<h4 class="title video-title">'.$photoTitle.'</h4>' : '';	
+			$html .= ($photoDesc) ? '<p class="description video-description">'.$photoDesc.'</p>' : '';	
+			echo $html;				
+	
+		} 
+	}
 }
 
 
@@ -218,25 +291,26 @@ function mh_audio_files(){
 $audioTypes = array('audio/mpeg'); 
 $myaudio = array(); 
 	while ($file = loop_files_for_item()):
-
+		$audioDesc = item_file('Dublin Core','Description');
+		$audioTitle = item_file('Dublin Core','Title');
 		$mime = item_file('MIME Type');
 		
-		//echo $mime;
-
 		if ( array_search($mime, $audioTypes) !== false ) {
 			
 			if ($index==0) echo '<h3>Audio</h3><script>audiojs.events.ready(function() {var as = audiojs.createAll();});</script>';
 			$index++;
 			
 			array_push($myaudio, $file);
-			
-
-			echo '<p class="audio-meta"><span class="audio-title">'.item_file('Dublin Core', 'Title').'</span><br/><span class="audio-caption">'.item_file('Dublin Core', 'Description').'</span></p>';
 	
 			echo '<audio>
 			<source src="'.file_download_uri($file).'" type="audio/mpeg" />
 			<h5 class="no-audio"><strong>Download Audio:</strong><a href="'.file_download_uri($file).'">MP3</a></h5>
 			</audio>';
+			
+			$html = '';
+			$html .= ($audioTitle) ? '<h4 class="title audio-title">'.$audioTitle.'</h4>' : '';	
+			$html .= ($audioDesc) ? '<p class="description audio-description">'.$audioDesc.'</p>' : '';	
+			echo $html;								
 		}	
 					
 	endwhile; 
@@ -255,7 +329,8 @@ function mh_video_files() {
 	$videoIndex = 1;
 	$videoTypes = array('video/mp4','video/mpeg','video/quicktime'); 
 	$videoPoster = mh_poster_url();
-	$videoHeading = (($videoIndex==1) ? '<h3>Video</h3>' : '');
+	$videoSWF= '<script> _V_.options.flash.swf = "'. WEB_ROOT .'/themes/curatescape/javascripts/video-js/video-js.swf"</script>';
+	$videoHeading = (($videoIndex==1) ? $videoSWF.'<h3>Video</h3>' : '');
 	
 	while(loop_files_for_item()): 
 		$file = get_current_file();
@@ -263,16 +338,46 @@ function mh_video_files() {
 		$videoFile = file_download_uri($file);
 		$videoTitle = item_file('Dublin Core', 'Title');
 		$videoClass = (($videoIndex==1) ? 'first' : 'not-first');
-				
+		$videoDesc = item_file('Dublin Core','Description');
+		$videoTitle = item_file('Dublin Core','Title');
 		
 		if ( in_array($videoMime,$videoTypes) ){
-			$html = $videoHeading.'<video width="640" height="360" id="video-'.$videoIndex.'" class="'.$videoClass.' video-js vjs-default-skin" controls poster="'.$videoPoster.'"  preload="auto" data-setup="{}">';
+			$html = $videoHeading;
+			$html .= '<video width="640" height="360" id="video-'.$videoIndex.'" class="'.$videoClass.' video-js vjs-default-skin" controls poster="'.$videoPoster.'"  preload="auto" data-setup="{}">';
 			$html .= '<source src="'.$videoFile.'" type="video/mp4">'; 
-			$html .= '</video>';	
+			$html .= '</video>';
+			$html .= ($videoTitle) ? '<h4 class="title video-title">'.$videoTitle.'</h4>' : '';	
+			$html .= ($videoDesc) ? '<p class="description video-description">'.$videoDesc.'</p>' : '';	
 			echo $html;	
 			$videoIndex++;
 			}
-	endwhile;
+	endwhile;	
+	?>
+	<!-- Responsify the video -->
+	<script>
+	     // Once the video is ready
+	    _V_("#video-1").ready(function(){
+	      
+	      // Store the video object
+	      var myVid = this; 
+	      
+	      // Set aspect ratio
+	      var aspectRatio = 360/640; 
+	
+	      function resizeVideoJS(){
+	        var width = document.getElementById(myVid.id).parentElement.offsetWidth;
+	        myVid.width(width).height( width * aspectRatio );
+	
+	      }
+	      
+	       // Initialize resizeVideoJS()
+	      resizeVideoJS();
+	      // Then on resize call resizeVideoJS()
+	      window.onresize = resizeVideoJS; 
+	
+	    });
+	</script>
+	<?php	
 }
 
 /*
@@ -283,7 +388,7 @@ function mh_subjects(){
 $subjects = item('Dublin Core', 'Subject', 'all');
 		if (count($subjects) > 0){
 
-	    	echo '<h3>Subject</h3>';
+	    	echo '<h3>Subjects</h3>';
 	    	echo '<div class="subjects"><ul>';
 	    	foreach ($subjects as $subject){
 	    		$link = WEB_ROOT;
@@ -381,6 +486,37 @@ function mh_share_this(){
 	return $html;
 }
 
+
+/*
+** Subnavigation for items/browse pages
+*/
+
+function mh_item_browse_subnav(){
+			if (function_exists('subject_browse_public_navigation_items')){
+			echo nav(array(
+			'All' => uri('items'), 
+			'Tags' => uri('items/tags'), 
+			'Subjects' => uri('items/subject-browse')
+			));
+			}
+			else{
+			echo nav(array(
+			'All' => uri('items'), 
+			'Tags' => uri('items/tags')));
+			} 	
+}
+
+
+/*
+** See where you're at in a loop and conditionally load content
+** This quirky little function is used mainly on items/browse, 
+** where we need to output all item records (making for one hell of a page load when you have 500+ items)
+** NOTE that you can only use this function within loops where $index is defined and incremented
+*/
+function mh_reducepayload($index,$showThisMany){
+	$showThisMany = ($index) ? ($index < $showThisMany) : true;
+	return $showThisMany;
+}
 
 /*
 ** Display the Tours list
@@ -821,19 +957,19 @@ function mh_normalize_special_characters( $str )
 { 
     # Quotes cleanup 
     $str = str_replace( chr(ord("`")), "'", $str );        # ` 
-    $str = str_replace( chr(ord("´")), "'", $str );        # ´ 
+    $str = str_replace( chr(ord("Â´")), "'", $str );        # Â´ 
     $str = str_replace( chr(ord("?")), ",", $str );        # ? 
     $str = str_replace( chr(ord("`")), "'", $str );        # ` 
-    $str = str_replace( chr(ord("´")), "'", $str );        # ´ 
+    $str = str_replace( chr(ord("Â´")), "'", $str );        # Â´ 
     $str = str_replace( chr(ord("?")), "\"", $str );        # ? 
     $str = str_replace( chr(ord("?")), "\"", $str );        # ? 
-    $str = str_replace( chr(ord("´")), "'", $str );        # ´ 
+    $str = str_replace( chr(ord("Â´")), "'", $str );        # Â´ 
 
-    $unwanted_array = array(    '?'=>'S', '?'=>'s', '?'=>'Z', '?'=>'z', 'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E', 
-                                'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O', 'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U', 
-                                'Ú'=>'U', 'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss', 'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c', 
-                                'è'=>'e', 'é'=>'e', 'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o', 'ô'=>'o', 'õ'=>'o', 
-                                'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'ý'=>'y', 'þ'=>'b', 'ÿ'=>'y'); 
+    $unwanted_array = array(    '?'=>'S', '?'=>'s', '?'=>'Z', '?'=>'z', 'Ã€'=>'A', 'Ã'=>'A', 'Ã‚'=>'A', 'Ãƒ'=>'A', 'Ã„'=>'A', 'Ã…'=>'A', 'Ã†'=>'A', 'Ã‡'=>'C', 'Ãˆ'=>'E', 'Ã‰'=>'E', 
+                                'ÃŠ'=>'E', 'Ã‹'=>'E', 'ÃŒ'=>'I', 'Ã'=>'I', 'ÃŽ'=>'I', 'Ã'=>'I', 'Ã‘'=>'N', 'Ã’'=>'O', 'Ã“'=>'O', 'Ã”'=>'O', 'Ã•'=>'O', 'Ã–'=>'O', 'Ã˜'=>'O', 'Ã™'=>'U', 
+                                'Ãš'=>'U', 'Ã›'=>'U', 'Ãœ'=>'U', 'Ã'=>'Y', 'Ãž'=>'B', 'ÃŸ'=>'Ss', 'Ã '=>'a', 'Ã¡'=>'a', 'Ã¢'=>'a', 'Ã£'=>'a', 'Ã¤'=>'a', 'Ã¥'=>'a', 'Ã¦'=>'a', 'Ã§'=>'c', 
+                                'Ã¨'=>'e', 'Ã©'=>'e', 'Ãª'=>'e', 'Ã«'=>'e', 'Ã¬'=>'i', 'Ã­'=>'i', 'Ã®'=>'i', 'Ã¯'=>'i', 'Ã°'=>'o', 'Ã±'=>'n', 'Ã²'=>'o', 'Ã³'=>'o', 'Ã´'=>'o', 'Ãµ'=>'o', 
+                                'Ã¶'=>'o', 'Ã¸'=>'o', 'Ã¹'=>'u', 'Ãº'=>'u', 'Ã»'=>'u', 'Ã½'=>'y', 'Ã½'=>'y', 'Ã¾'=>'b', 'Ã¿'=>'y'); 
                                 
     $str = strtr( $str, $unwanted_array ); 
     
