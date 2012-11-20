@@ -26,7 +26,7 @@
 .domprefixes{}
 .load{}
 
-/* ===== Other MODERNIZR classes (for applying IE fixes, etc.) ===== */
+/* ===== Additional MODERNIZR classes (for applying IE fixes) ===== */
 .notie{}
 .ie{} 
 .ie6{} 
@@ -34,10 +34,25 @@
 .lte8{}
 .lte9{}
 
-/* ===== GENERIC (grid, links, typography, etc) ===== */
+/* ===== Other DYNAMIC classes (check-width.js) ===== */
+body.small{}
+body.big{}
+
+
+/* ===== Stuff we HIDE BY DEFAULT (trying to keep this to a minimum so as not to waste bits and bytes) ===== */
+figure#home-map,
+.browse #page-col-right,
+.page #page-col-right,
+#share-this{
+	display: none;visibility: hidden;
+	}
+
+
+/* ===== NO JS ===== */
 #no-js-message{display: none;visibility: hidden;height:0}
 .no-js #no-js-message{display: block; visibility: visible;height:auto; background: #f5f581;padding: 0.5em;text-align: center;}
 
+/* ===== GENERIC (grid, links, typography, etc) ===== */
 body{width:100%; margin:0 auto; display:block;}
 #wrap{width:95%; margin:0 auto; display:block;max-width: 25em;}
 #content, footer{display: block;clear: both;}
@@ -52,8 +67,11 @@ a:active{}
 
 
 h1, h2, h3, h4, h5 {
-	font-family: "news-gothic-std-1","news-gothic-std-2","Arial Narrow", sans-serif;
+	font-family: "news-gothic-std-1","news-gothic-std-2","Arial Narrow", "Arial", sans-serif;
+	text-shadow: 0.01em 0.025em 0 #fff;
 }
+
+
 
 /* ===== MOBILE FIRST (and base for IEs and other old browsers) ===== */
 
@@ -101,7 +119,7 @@ input#submit_search{
 }
 
 /* MAP */
-figure#home-map{display: none;visibility: hidden}
+figure#home-map{} /* <-- set to display:none above, we'll undo that in the @media queries below */ 
 #map-display { width: 100%; height: 335px;}
 .geolocation_balloon_title{}
 .geolocation_balloon_title a{}
@@ -124,10 +142,10 @@ figure#home-map{display: none;visibility: hidden}
 #featured-story, #custom-column{
 	background: #eaeaea;
 	display: block;
-	padding:0 1.5em;
+	padding:0 1.5em .5em;
     border: 1px solid #fff;
     border-radius: .2em;	
-    box-shadow: 0 0 10em #ccc inset, 0 0 0.15em #777
+    box-shadow: 0 0 5em #ccc inset;
 }
 
 #featured-story .item-thumb img{clear:both;width: 95%; margin: 0 auto 1em;}
@@ -143,7 +161,7 @@ section#downloads .app-store{
 	text-align: center;
     border-bottom: 1px solid #ccc;
     border-right: 1px solid #ccc;
-    border-radius: .35em;
+    border-radius: .2em;
     color: #333;
     text-decoration: none;
     background-position: 1em .25em;
@@ -181,13 +199,39 @@ article.item-result .item-description{}
 .item-thumb img{display: inline-block; width: 25%; float: left; height: auto;margin: .25em .75em .25em 0; padding:1%;background: #fff; border:1px solid #ccc; box-shadow: 0 0 .15em #777;}
 
 
-/* ITEMS-BROWSE */
+/* BROWSE */
+#subject-browse .pagination_list{font-size: smaller;}
 
+
+/* TAGS */
+.hTagcloud {margin-top:2em;}
+.hTagcloud ul {list-style:none; margin-left:0; padding-left:0; line-height:1.8em;}
+.hTagcloud li {display:inline;margin-right:8px;}
+
+.popular {font-size:100%;}
+.v-popular {font-size:140%;}
+.vv-popular {font-size:180%;}
+.vvv-popular {font-size:220%;}
+.vvvv-popular {font-size:260%;}
+.vvvvv-popular {font-size:300%;}
+.vvvvvv-popular {font-size:320%;}
+.vvvvvvv-popular {font-size:340%;}
+.vvvvvvvv-popular {font-size:360%;}
+
+.popular a, .popular a:visited {opacity: .65;}
+.v-popular a, .v-popular a:visited {opacity: .75;}
+.vv-popular a, .vv-popular a:visited {opacity: .75;}
+.vvv-popular a, .vvv-popular a:visited {opacity: .85;}
+.vvvv-popular a, .vvvv-popular a:visited {opacity: .85;}
+.vvvvv-popular a, .vvvvv-popular a:visited {opacity: .95;}
+.vvvvvv-popular a, .vvvvvv-popular a:visited {opacity: .95;}
+.vvvvvvv-popular a, .vvvvvvv-popular a:visited {opacity: 1;}
+.vvvvvvvv-popular a, .vvvvvvvv-popular a:visited {opacity: 1;}
 
 /* ITEMS-SHOW */
 a.fancybox-hide-text{
 	font-size: smaller;
-	border: 1px dotted #777777;
+	border: 1px dotted #777;
     cursor: pointer;
     display: block;
     float: right;
@@ -195,21 +239,42 @@ a.fancybox-hide-text{
     padding: 0 0.5em;
 }
 
+.item-file img{width: 100%; height:auto;}
+
+.item-map-link{font-size: smaller;}
+
 /* STREAMING MEDIA */
 video{max-width: 100%; height:auto}
 #item-video .first {}
 #item-video .not-first {} 
-#item-video{clear:both;display: inline-block;}
+#item-video{max-width:100%; height:auto;clear:both;display: inline-block;}
 audio{}
 
 /* FOOTER */
 footer{text-align: center;margin-top: 1em;padding-top:.5em; border-top:1px solid #ccc;}
 footer p, footer nav {margin-bottom: .25em;}
 footer p{font-size: smaller;}
+#app-store-links{background: #eaeaea; width: 100%; display: block; padding: .75em 0; margin-top: .5em;margin-bottom: -1em;}
 
+
+
+/*
+**
+**
+**
+**
+**
+**
+============================================================ */
 /* ===== MEDIA QUERIES for modern, non-mobile browsers ===== */
+
+
+@media only screen and (max-width: 25em) {
+	/*figure#home-map{display: block;visibility: visible}*/
+}
+
 @media only screen and (min-width: 25em) {
-	figure#home-map{}
+	/*figure#home-map{display: block;visibility: visible}*/
 }
 
 @media only screen and (min-width: 35em) {
@@ -217,7 +282,7 @@ footer p{font-size: smaller;}
 }
 
 @media only screen and (min-width: 60em) {
-
+	/*figure#home-map{display: block;visibility: visible}*/
 }
 
 /* ===== MEDIA QUERIES for RETINA and HIDPI displays ===== */
