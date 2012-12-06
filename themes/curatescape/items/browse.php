@@ -16,9 +16,55 @@ elseif ($query) {
 else{
 	$title = 'All Stories';
 }	
-head(array('title'=>$title)); 
+head(array('title'=>$title,'bodyid'=>'items','bodyclass'=>'browse')); 
 ?>
+<figure id="browse-view">
+
+
+
+
+	<div id="browse-map">
+		<div id="map_canvas">
+			<?php echo geolocation_scripts(); ?>
+
+			<div id="map-block">
+			<h2 id="story-map" class="visuallyhidden">Story Map</h2>
+				<?php echo geolocation_google_map('map-display', array('loadKml'=>true, 'list'=>'map-links'));?>
+			</div>
+
+			<div id="link_block" style="display:none;">
+				<div id="map-links" style="display:none;"></div><!-- Used by JavaScript -->
+			</div>
+			
+		</div> 
+	</div>
+
+
+
+	
+	<?php /*
+	echo '<div id="header-imgs">';
+	$index=1; 
+	while (loop_items() && ($index<10)): 
+		$description = item('Dublin Core', 'Description', array('snippet'=>250));
+		$tags=tag_string(get_current_item(), uri('items/browse?tags='));
+		$thumblink=link_to_item(item_square_thumbnail());
+		$fullsizelink=link_to_item(item_fullsize());
+		$titlelink=link_to_item(item('Dublin Core', 'Title'), array('class'=>'permalink'));
+		
+		echo $thumblink;
+		$index++;
+		endwhile;	
+	echo '</div>';			
+	*/?>
+		
+
+
+</figure>
+
+
 <div id="content">
+
 <section class="browse stories items">			
 	<h2><?php 
 	$title .= ( (total_results()) ? ': <span class="item-number">'.total_results().'</span>' : '');
@@ -45,6 +91,8 @@ head(array('title'=>$title));
 		<div class="pagination top"><?php echo pagination_links(); ?></div>
 		
 		<?php 
+		$index=1; // set index to one so we can use zero as an argument below
+		$showImgNum= 0; // show this many images on the browse results page
 		while (loop_items()): 
 			$description = item('Dublin Core', 'Description', array('snippet'=>250));
 			$tags=tag_string(get_current_item(), uri('items/browse?tags='));
@@ -55,7 +103,7 @@ head(array('title'=>$title));
 			
 				<h3><?php echo $titlelink; ?></h3>
 				
-				<?php if (item_has_thumbnail() && mh_reducepayload($index,3)): ?>
+				<?php if (item_has_thumbnail() && mh_reducepayload($index,$showImgNum)): ?>
 					<div class="item-thumb">
 	    				<?php echo $thumblink; ?>						
 	    			</div>
@@ -68,7 +116,7 @@ head(array('title'=>$title));
     				</div>
 				<?php endif; ?>
 
-				<?php if (item_has_tags() && mh_reducepayload($index,3)): ?>
+				<?php if (item_has_tags()): ?>
     				<div class="item-tags">
     				<p><span>Tags:</span> <?php echo $tags; ?></p>
     				</div>
