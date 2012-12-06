@@ -1,4 +1,6 @@
-<?php head(array('title'=>'404')); ?>
+<?php 
+
+head(array('title'=>'404','bodyid'=>'error','bodyclass'=>'error_404')); ?>
 <div id="content">
 <article class="error show">
 <h2>404</h2>

@@ -1,4 +1,4 @@
-<?php head(array('title'=>'Browse by Tag')); ?>
+<?php head(array('title'=>'Browse by Tag','bodyid'=>'items','bodyclass'=>'browse tags')); ?>
 <div id="content">
 <section class="browse tags">			
 <h2>Tags: <?php echo total_tags();?></h2>

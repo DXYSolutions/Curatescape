@@ -41,44 +41,80 @@ body.big{}
 
 /* ===== Stuff we HIDE BY DEFAULT (trying to keep this to a minimum so as not to waste bits and bytes) ===== */
 figure#home-map,
+figure#browse-view,
 .browse #page-col-right,
 .page #page-col-right,
-#share-this{
+.tour #page-col-right,
+.browse #page-col-left,
+.page #page-col-left,
+.tour #page-col-left,
+#error #page-col-right,
+#error #page-col-left,
+#share-this,
+#item-map, 
+#item-map h3,
+.item-description h3{
 	display: none;visibility: hidden;
 	}
 
 
 /* ===== NO JS ===== */
 #no-js-message{display: none;visibility: hidden;height:0}
-.no-js #no-js-message{display: block; visibility: visible;height:auto; background: #f5f581;padding: 0.5em;text-align: center;}
+.no-js #no-js-message{display: block; visibility: visible; height:auto; background: #f5f581;padding: 0.5em;text-align: center;}
 
 /* ===== GENERIC (grid, links, typography, etc) ===== */
-body{width:100%; margin:0 auto; display:block;}
-#wrap{width:95%; margin:0 auto; display:block;max-width: 25em;}
-#content, footer{display: block;clear: both;}
+body{margin:0 auto; display:block;}
+#wrap{margin:0 auto; display:block; }
+header.main, #content, footer.main{display: block;clear: both; margin:0 auto; padding: 0 5%; max-width: 25em;}
 article{display:block;}
 section{display:block;}
 aside{display:block;}
+
+
+#content{
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    -o-hyphens: auto;
+    hyphens: auto;	
+}
+
+#cite-this, .item-related-links a{ /* let's try to avoid hyphenating URLs */
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    -o-hyphens: none;
+    hyphens: none;		
+}
+
 p{}
 
-a, a:visited{}
+a, a:visited{text-decoration: none;}
 a:hover{}
 a:active{}
 
 
 h1, h2, h3, h4, h5 {
-	font-family: "news-gothic-std-1","news-gothic-std-2","Arial Narrow", "Arial", sans-serif;
+	font-family: /* "News Gothic MT",*/"Arial Narrow", "Arial", sans-serif;
 	text-shadow: 0.01em 0.025em 0 #fff;
 }
 
 
 
-/* ===== MOBILE FIRST (and base for IEs and other old browsers) ===== */
+/*
+**
+**
+**
+**
+**
+**
+============================================================ */
+/* ===== MOBILE FIRST (+ base for older browsers) ========== */
 
 /* NAV */
-nav{}
-nav ul{}
-nav ul{padding: 0; text-align: center;}
+nav#primary-nav{}
+nav#primary-nav ul{}
+nav#primary-nav ul{padding: 0; text-align: center;}
 nav#primary-nav ul li, nav#footer-nav ul li{display: inline;padding:1em 0.5em;}
 nav.secondary-nav ul li{display: inline-block; margin-right: 1em;}
 .pagination_list li{display: inline-block; margin-right: .15em;}
@@ -120,14 +156,14 @@ input#submit_search{
 
 /* MAP */
 figure#home-map{} /* <-- set to display:none above, we'll undo that in the @media queries below */ 
-#map-display { width: 100%; height: 335px;}
+#map-display { width: 100%; height: 20em;}
 .geolocation_balloon_title{}
 .geolocation_balloon_title a{}
 .geolocation_balloon_description{font-size: .75em; color:#777;}
 
 /* LOGO */
-#logo {text-align: center;padding-top:1em;}
-
+#logo {text-align: center;padding-top:1em;max-width: 95%;}
+#logo img{max-width: 100%;}
 
 /* HOMEPAGE */
 #homepage #home-tours{}
@@ -140,24 +176,19 @@ figure#home-map{} /* <-- set to display:none above, we'll undo that in the @medi
 #recent-story .item-text,#featured-story .item-text{}
 
 #featured-story, #custom-column{
-	background: #eaeaea;
 	display: block;
-	padding:0 1.5em .5em;
-    border: 1px solid #fff;
-    border-radius: .2em;	
-    box-shadow: 0 0 5em #ccc inset;
+    clear: both;
 }
 
 #featured-story .item-thumb img{clear:both;width: 95%; margin: 0 auto 1em;}
 
-section#downloads .app-store{
+.app-store{
 	display: block; 
 	clear:both; 
 	margin: .5em auto; 
 	padding:.4em .5em 0.25em; 
 	background-color: #eaeaea; 
 	min-width: 15em;
-	width: 95%;
 	text-align: center;
     border-bottom: 1px solid #ccc;
     border-right: 1px solid #ccc;
@@ -168,67 +199,70 @@ section#downloads .app-store{
     background-repeat: no-repeat;   
     text-shadow: .005em .0015em 0 #fafafa; 
 }
-section#downloads .app-store:hover{
-	background-color: #88B30B;
+.app-store:hover{
     border-bottom: 1px solid #555;
     border-right: 1px solid #555;	
 }
-section#downloads .app-store#apple {
+.app-store#apple {
     background-image: url("../images/apple-grey.png");
 }
 
-section#downloads .app-store#android {
+.app-store#android {
     background-image: url("../images/android-grey.png");
 }
-section#downloads .app-store#android:hover{
+.app-store#android:hover{
 	background-image: url("../images/android-black.png");	
 }
-section#downloads .app-store#apple:hover{
+.app-store#apple:hover{
 	background-image: url("../images/apple-black.png");
 }
 
+/*
 .generatedcontent #home-tours ul{padding-left:0}
 .generatedcontent #home-tours li{list-style-type: none; margin-left:0; display: inline;}
 .generatedcontent #home-tours li:after{content:", "}
 .generatedcontent #home-tours li:last-child:after{content: " ";}
-
+*/
 
 /* HOMEPAGE and ITEMS-BROWSE */
 article.item-result{display: block;clear: both;}
 article.item-result .item-description{} 
-.item-thumb img{display: inline-block; width: 25%; float: left; height: auto;margin: .25em .75em .25em 0; padding:1%;background: #fff; border:1px solid #ccc; box-shadow: 0 0 .15em #777;}
+.item-thumb img{display: inline-block; width: 25%; float: left; height: auto;margin: .25em .75em .25em 0; padding:.25%;background: #fff; border:1px solid #ccc; box-shadow: 0 0 .15em #777;}
 
 
 /* BROWSE */
 #subject-browse .pagination_list{font-size: smaller;}
 
 
+
 /* TAGS */
-.hTagcloud {margin-top:2em;}
-.hTagcloud ul {list-style:none; margin-left:0; padding-left:0; line-height:1.8em;}
-.hTagcloud li {display:inline;margin-right:8px;}
+.browse.tags .hTagcloud {margin-top:2em;}
+.browse.tags .hTagcloud ul {list-style:none; margin-left:0; padding-left:0; line-height:1.8em;}
+.browse.tags .hTagcloud li {display:inline;margin-right:8px;}
 
-.popular {font-size:100%;}
-.v-popular {font-size:140%;}
-.vv-popular {font-size:180%;}
-.vvv-popular {font-size:220%;}
-.vvvv-popular {font-size:260%;}
-.vvvvv-popular {font-size:300%;}
-.vvvvvv-popular {font-size:320%;}
-.vvvvvvv-popular {font-size:340%;}
-.vvvvvvvv-popular {font-size:360%;}
+.browse.tags .browse.tags .popular {font-size:100%;}
+.browse.tags .v-popular {font-size:140%;}
+.browse.tags .vv-popular {font-size:180%;}
+.browse.tags .vvv-popular {font-size:220%;}
+.browse.tags .vvvv-popular {font-size:260%;}
+.browse.tags .vvvvv-popular {font-size:300%;}
+.browse.tags .vvvvvv-popular {font-size:320%;}
+.browse.tags .vvvvvvv-popular {font-size:340%;}
+.browse.tags .vvvvvvvv-popular {font-size:360%;}
 
-.popular a, .popular a:visited {opacity: .65;}
-.v-popular a, .v-popular a:visited {opacity: .75;}
-.vv-popular a, .vv-popular a:visited {opacity: .75;}
-.vvv-popular a, .vvv-popular a:visited {opacity: .85;}
-.vvvv-popular a, .vvvv-popular a:visited {opacity: .85;}
-.vvvvv-popular a, .vvvvv-popular a:visited {opacity: .95;}
-.vvvvvv-popular a, .vvvvvv-popular a:visited {opacity: .95;}
-.vvvvvvv-popular a, .vvvvvvv-popular a:visited {opacity: 1;}
-.vvvvvvvv-popular a, .vvvvvvvv-popular a:visited {opacity: 1;}
+.browse.tags .popular a, .popular a:visited {opacity: .65;}
+.browse.tags .v-popular a, .v-popular a:visited {opacity: .75;}
+.browse.tags .vv-popular a, .vv-popular a:visited {opacity: .75;}
+.browse.tags .vvv-popular a, .vvv-popular a:visited {opacity: .85;}
+.browse.tags .vvvv-popular a, .vvvv-popular a:visited {opacity: .85;}
+.browse.tags .vvvvv-popular a, .vvvvv-popular a:visited {opacity: .95;}
+.browse.tags .vvvvvv-popular a, .vvvvvv-popular a:visited {opacity: .95;}
+.browse.tags .vvvvvvv-popular a, .vvvvvvv-popular a:visited {opacity: 1;}
+.browse.tags .vvvvvvvv-popular a, .vvvvvvvv-popular a:visited {opacity: 1;}
 
 /* ITEMS-SHOW */
+#story-header{margin-bottom: 1em;}
+
 a.fancybox-hide-text{
 	font-size: smaller;
 	border: 1px dotted #777;
@@ -240,8 +274,52 @@ a.fancybox-hide-text{
 }
 
 .item-file img{width: 100%; height:auto;}
+.item-map-link {font-size: smaller;float: left;color:#555;padding: .25em; position: inherit;}
 
-.item-map-link{font-size: smaller;}
+#item-photos{display: inline-block; clear: both;width:100%;}
+.big #item-photos img{float:left; width:31%;padding:1% 1% 0 0; display: inline;}
+
+.generatedcontent .show #subjects{margin-top:0.75em;}
+.generatedcontent .show #subjects h3{display: inline;}
+.generatedcontent .show #subjects h3:after{content:': ';}
+.generatedcontent .show #subjects ul{display:inline;padding-left:0}
+.generatedcontent .show #subjects li{list-style-type: none; margin-left:0; display: inline;}
+.generatedcontent .show #subjects li:after{content:", "}
+.generatedcontent .show #subjects li:last-child:after{content:""}
+
+
+.generatedcontent .show #tags{margin-top:0.75em;}
+.generatedcontent .show #tags h3{display: inline;}
+.generatedcontent .show #tags h3:after{content:': ';}
+.generatedcontent .show #tags .hTagcloud{display:inline;}
+.generatedcontent .show #tags ul{display:inline;padding-left:0}
+.generatedcontent .show #tags li{list-style-type: none; margin-left:0; display: inline;}
+.generatedcontent .show #tags li:after{content:", "}
+.generatedcontent .show #tags li:last-child:after{content:""}
+
+.generatedcontent .show #relations{margin-top:0.75em;}
+.generatedcontent .show #relations h3{display: inline;}
+.generatedcontent .show #relations h3:after{content:': ';}
+.generatedcontent .show #relations ul{display:inline;padding-left:0}
+.generatedcontent .show #relations li{list-style-type: none; margin-left:0; display: inline;}
+.generatedcontent .show #relations li:after{content:", "}
+.generatedcontent .show #relations li:last-child:after{content:""}
+
+.generatedcontent .show #cite-this{margin-top:0.75em;}
+.generatedcontent .show #cite-this h3{display: inline;}
+.generatedcontent .show #cite-this h3:after{content:': ';}
+.generatedcontent .show #cite-this ul{display:inline;padding-left:0}
+.generatedcontent .show #cite-this li{list-style-type: none; margin-left:0; display: inline;}
+
+.generatedcontent .show .item-related-links{margin-top:0.75em;}
+.generatedcontent .show .item-related-links h3{}
+.generatedcontent .show .item-related-links h3:after{content:': ';}
+.generatedcontent .show .item-related-links ul{padding-left: 0}
+.generatedcontent .show .item-related-links li{list-style-type: none; margin-left: 0;}
+.generatedcontent .show .item-related-links li:after{}
+.generatedcontent .show .item-related-links li:last-child:after{}
+.generatedcontent .show .item-related-links li:first-child:before{}
+
 
 /* STREAMING MEDIA */
 video{max-width: 100%; height:auto}
@@ -251,9 +329,9 @@ video{max-width: 100%; height:auto}
 audio{}
 
 /* FOOTER */
-footer{text-align: center;margin-top: 1em;padding-top:.5em; border-top:1px solid #ccc;}
-footer p, footer nav {margin-bottom: .25em;}
-footer p{font-size: smaller;}
+footer.main{text-align: center;margin-top: 1em;padding-top:.5em; border-top:1px solid #ccc;}
+footer.main p, footer.main nav {margin-bottom: .25em;}
+footer.main p{font-size: smaller;}
 #app-store-links{background: #eaeaea; width: 100%; display: block; padding: .75em 0; margin-top: .5em;margin-bottom: -1em;}
 
 
@@ -269,24 +347,268 @@ footer p{font-size: smaller;}
 /* ===== MEDIA QUERIES for modern, non-mobile browsers ===== */
 
 
-@media only screen and (max-width: 25em) {
-	/*figure#home-map{display: block;visibility: visible}*/
+@media only screen and (max-width: 25em) { /* smaller phone viewport */
+	#wrap:before{content:'25-';float:left; position: fixed; bottom: 0; left: 0; padding: .5em 1em .25em .5em;color: white; background: #222; border-top-right-radius: 1em;} /* <--- for testing */
+	
+	
 }
 
-@media only screen and (min-width: 25em) {
-	/*figure#home-map{display: block;visibility: visible}*/
+@media only screen and (min-width: 25em) { /* larger phone viewport */
+	#wrap:before{content:'25+';float:left; position: fixed; bottom: 0; left: 0; padding: .5em 1em .25em .5em;color: white; background: #333; border-top-right-radius: 1em;} /* <--- for testing */
+	
+	
 }
 
-@media only screen and (min-width: 35em) {
-	/*figure#home-map{display: block;visibility: visible}*/
+@media only screen and (min-width: 45em) { /* tablet viewport -- 2 col */
+	#wrap:before{content:'45+';float:left; position: fixed; bottom: 0; left: 0; padding: .5em 1em .25em .5em;color: white; background: #444; border-top-right-radius: 1em;} /* <--- for testing */
+		
+	header.main {max-width: none;background: #333; display: block; width: 100%;height: 5em;padding: 0;}
+	header.main li a{}
+	header.main h1.site-title{}
+	header.main #logo{margin-left:5%;display: inline-block;position: relative;z-index: 999}
+	header.main #logo img{height:7em;}
+	#primary-nav{display: inline-block;margin-left:2em;margin-top: 1em;position: absolute;}
+	#primary-nav a{color:#fff;}
+	#search-wrap{margin-right:5%; margin-top:1.5em; float: right;display: inline-block;max-width: 20%;}
+	input#submit_search{display: none;visibility: hidden;height: 0;width: 0;}
+	input#search{width: 100%;}
+	
+	
+	#content{max-width: none;padding: 0;min-height: 35em;}
+	
+	
+	figure#home-map{display: block;visibility: visible;}
+	
+	#section-container{display: block; clear: both; padding: 0; margin: 0;}
+	#section-container-top{display: inline-block;width: 100%;padding-bottom:1.5em;}
+	#section-container-bottom{display: inline-block;width: 100%; background: #ccc; padding-bottom: 3em;padding-top: 1em;}
+	
+		.section-container-inner{width:90%; max-width: 65em;margin: 1em auto 2em;}
+	
+	#recent-story{width:45%;padding:0; float:left; display: inline; clear:none;margin: 0}
+	#featured-story{width: 45%;padding:0; float: right; display: inline; clear:none;margin: 0}
+		#featured-story .item-thumb img {width: 100%;padding: 0; box-shadow: none;}
+		#featured-story .item-thumb{display: block; max-height: 15em; overflow: hidden;width: 100%;}
+	
+		
+	#home-tours{width:45%;padding:0; float:left; display: inline; clear:none;margin: 0}
+	#custom-column{width:45%;padding:0; float:right; display: inline; clear:none;margin: 0 }
+	#downloads{width:45%;padding:0; float:right; display: inline; clear:both;margin: 0}	
+		#downloads h2{display: none; visibility: hidden;}
+		a.app-store{}
+		
+		
+	
+	footer.main{margin-top: -1em;padding-top:1em; border-top:0 none transparent;color:#fff; background: #333;max-width: none;text-align: right;display: block;clear: both;}
+	footer.main a{color:#fff;}
+	footer.main ul.navigation{text-align: right;}	
+	footer.main #app-store-links{background: transparent}
+	
+	
+	
+	article.story.show{margin: 0 auto;display: block;}
+	#story-header,#item-primary,
+	#item-media,#item-metadata, article.tour.show,article.error{width:65%;max-width: 40em;}
+	#story-header,#item-primary,#item-media{margin: 0 auto;}
+	#item-metadata{margin: 0em auto 5em;}
+	article.story #section-container-bottom,article.tour.show,article.error{margin: 3em auto;padding-bottom: 1em;}
+	
+	article.tour.show,.tours.browse #content, article.error{margin-top:5em;}
+	
+	
+	
+	/* break the map out of it's (semantically-correct) order in the DOM, push the content below the map */
+	
+	#item-map{
+    visibility: visible;
+    display: inline-block;
+    background: none repeat scroll 0 0 #555555;
+    width: 100%;
+    float: left;
+    left: 0;
+    margin: 0 auto;
+    position: absolute;
+    top: 5em;
+    		
+	}
+	
+	#story-header{margin: 23em auto 2em;}
+	
+	/* end breakout */
+	
+	.show #item-primary.show,
+	.show #item-media,
+	.show #item-metadata{}
+	
+	#item-video, #item-audio, #item-photos{}
+	#item-audio h4,#item-video h4{margin: 0; color:#fff; background: #333; text-align: center; text-shadow: 0.01em 0.025em 0 #000;font-size: smaller;}
+	#item-audio .description,#item-video .description{display: none; visibility: hidden;}
+	
+	.audiojs, audio{margin-top: 1em;}
+
+	.generatedcontent .show .item-related-links h3{
+	    border-top: 1px solid #CCCCCC;
+	    margin-top: 2.5em;
+	    padding-top: 2em;
+	}
+	
+	.browse #content{margin:3em auto 3em;width:65%; max-width: 40em;display: block;}
+	.browse .item-thumb img{max-width: 6em;}
+	
+	figure#browse-view{display:block; visibility:visible;background: #ccc;overflow: hidden;height: 20em;}
+	#browse-view #map-display{}
+	
+	article.page{margin: 5em 5% 3em;}
+	.page #page-col-right{float:right;display: block; visibility: visible;width:34%;text-align: right;}
+	.page #primary{width:65%;display: block;margin-bottom: 5em;float: left;min-height: 25em;}	
+		.page #share-this{display: block; visibility: visible;text-align: right;}
+		.page #share-this a{float:right;}
+
 }
 
-@media only screen and (min-width: 60em) {
-	/*figure#home-map{display: block;visibility: visible}*/
+@media only screen and (min-width: 70em) { /* desktop/laptop viewport -- 3 col*/
+	#wrap:before{content:'70+';float:left; position: fixed; bottom: 0; left: 0; padding: .5em 1em .25em .5em;color: white; background: #555; border-top-right-radius: 1em;} /* <--- for testing */
+
+
+
+	
+}
+
+@media only screen and (min-width: 80em) { /* widescreen desktop/laptop viewport */
+	#wrap:before{content:'80+';float:left; position: fixed; bottom: 0; left: 0; padding: .5em 1em .25em .5em;color: white; background: #666; border-top-right-radius: 1em;} /* <--- for testing */
+	
+	
+	header.main{}
+	header.main h1.site-title{}
+	header.main #logo{}
+	#primary-nav{}
+	#search-wrap{}	
+	
+	
 }
 
 /* ===== MEDIA QUERIES for RETINA and HIDPI displays ===== */
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5),
        only screen and (min-resolution: 144dpi) {
     /* do something */
+}
+
+
+/*
+**
+**
+**
+**
+**
+**
+============================================================ */
+/* ===== FONTS ============================================= */
+
+/*  Font Awesome
+    the iconic font designed for use with Twitter Bootstrap
+    -------------------------------------------------------
+    The full suite of pictographic icons, examples, and documentation
+    can be found at: http://fortawesome.github.com/Font-Awesome/
+
+    License
+    -------------------------------------------------------
+    The Font Awesome webfont, CSS, and LESS files are licensed under CC BY 3.0:
+    http://creativecommons.org/licenses/by/3.0/ A mention of
+    'Font Awesome - http://fortawesome.github.com/Font-Awesome' in human-readable
+    source code is considered acceptable attribution (most common on the web).
+    If human readable source code is not available to the end user, a mention in
+    an 'About' or 'Credits' screen is considered acceptable (most common in desktop
+    or mobile software).
+
+    Contact
+    -------------------------------------------------------
+    Email: dave@davegandy.com
+    Twitter: http://twitter.com/fortaweso_me
+    Work: http://lemonwi.se co-founder
+
+    */
+@font-face {
+  font-family: "FontAwesome";
+  src: url('../font/fontawesome-webfont.eot');
+  src: url('../font/fontawesome-webfont.eot?#iefix') format('eot'), url('../font/fontawesome-webfont.woff') format('woff'), url('../font/fontawesome-webfont.ttf') format('truetype'), url('../font/fontawesome-webfont.svg#FontAwesome') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/*  Font Awesome styles
+    ------------------------------------------------------- */
+[class^="icon-"]:before, [class*=" icon-"]:before {
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-decoration: inherit;
+}
+a [class^="icon-"], a [class*=" icon-"] {
+  display: inline-block;
+  text-decoration: inherit;
+}
+/* makes the font 33% larger relative to the icon container */
+.icon-large:before {
+  vertical-align: top;
+  font-size: 1.3333333333333333em;
+}
+.btn [class^="icon-"], .btn [class*=" icon-"] {
+  /* keeps button heights with and without icons the same */
+
+  line-height: .9em;
+}
+li [class^="icon-"], li [class*=" icon-"] {
+  display: inline-block;
+  width: 1.25em;
+  text-align: center;
+}
+li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
+  /* 1.5 increased font size for icon-large * 1.25 width */
+
+  width: 1.875em;
+}
+li[class^="icon-"], li[class*=" icon-"] {
+  margin-left: 0;
+  list-style-type: none;
+}
+li[class^="icon-"]:before, li[class*=" icon-"]:before {
+  text-indent: -2em;
+  text-align: center;
+}
+li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
+  text-indent: -1.3333333333333333em;
+}
+/*  Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen
+    readers do not read off random characters that represent icons */
+
+.icon-camera-retro:before         { content: "\f083"; }    
+.icon-film:before                 { content: "\f008"; }
+.icon-volume-up:before            { content: "\f028"; }
+.icon-facetime-video:before       { content: "\f03d"; }
+.icon-picture:before              { content: "\f03e"; }
+.icon-comment:before              { content: "\f075"; }
+.icon-comments:before             { content: "\f086"; }
+.icon-envelope:before             { content: "\f003"; }
+.icon-twitter:before              { content: "\f099"; }
+.icon-facebook:before             { content: "\f09a"; }
+.icon-github:before               { content: "\f09b"; }
+.icon-map-marker:before           { content: "\f041"; }
+.icon-search:before               { content: "\f002"; }
+.icon-info-sign:before            { content: "\f05a"; }
+
+
+h3 .icon-camera-retro:before,
+h3 .icon-film:before,
+h3 .icon-volume-up:before,
+h3 .icon-facetime-video:before,
+h3 .icon-picture:before,
+h3 .icon-comment:before,
+h3 .icon-comments:before,
+h3 .icon-envelope:before,
+h3 .icon-twitter:before,
+h3 .icon-facebook:before,
+h3 .icon-github:before,
+.icon-map-marker:before{
+	padding-right: .5em;
 }

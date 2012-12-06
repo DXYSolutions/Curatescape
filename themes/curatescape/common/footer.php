@@ -1,4 +1,4 @@
-<footer>
+<footer class="main">
 	<nav id="footer-nav">
     	<ul class="navigation">
 	    	<?php echo mh_global_nav(); ?>

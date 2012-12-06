@@ -26,33 +26,49 @@ else{
 				
 			</div> 
 		</div>
+
 	</figure>
+
+	<div id="section-container">
+		
+	<div id="section-container-top">
+		<div class="section-container-inner">
+		
+			<section id="recent-story">
+				<?php mh_display_recent_item(3);?>
+			</section>
+				
+			<section id="featured-story"> 
+				<?php echo mh_display_random_featured_item(true); ?>
+			</section>	
+				
+		</div>
+	</div>
 	
-	<section id="recent-story">
-		<?php mh_display_recent_item(3);?>
-	</section>
+	<div id="section-container-bottom">	
+		<div class="section-container-inner">	
 		
-		   
-	<section id="featured-story"> 
-		<?php echo mh_display_random_featured_item(true); ?>
-	</section>		
-
-	<section id="home-tours">
-		<?php mh_display_tour_items(); ?>
-	</section>
-		
-	<section id="custom-column">
-		<?php mh_custom_column_home();?>
-	</section>	
-
-	<section id="downloads">
-		<?php mh_appstore_downloads(); ?>
-	</section> 	
+			<section id="home-tours">
+				<?php mh_display_random_tours(); ?>
+			</section>
+						
+			<section id="custom-column">						
+				<?php mh_custom_column_home();?>
+			</section>	
 	
+			<section id="downloads">
+				<?php mh_appstore_downloads(); ?>
+			</section> 	
 		
+		</div>
+	</div>	
+	
+	</div>
 
+	
 </article>
 </div> <!-- end content -->
+
 <?php foot(); ?>
 
 <?php

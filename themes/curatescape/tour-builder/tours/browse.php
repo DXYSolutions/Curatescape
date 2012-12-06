@@ -1,10 +1,10 @@
 <?php
 head( array( 'title' => 'Tours', 'content_class' => 'horizontal-nav',
-   'bodyclass' => 'tours primary browse-tours' ) );
+   'bodyclass' => 'tours primary browse-tours browse' ) );
 ?>
 <div id="content">
 <section class="browse tour">			
-<h2>Browse Tours: <?php echo $total_records; ?></h2>
+<h2>All Tours: <?php echo $total_records; ?></h2>
 
 	<div id="page-col-left">
 		<aside>
