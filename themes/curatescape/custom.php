@@ -42,7 +42,7 @@ function mh_global_header(){
     $html .= '</nav>';
     
     $html .= '<div id="search-wrap">';
-	$html .= mh_simple_search(); 
+	$html .= mh_simple_search($buttonText, $formProperties=array('id'=>'header-search'), $uri); 
     $html .= '</div>';
     
     return $html;	
@@ -71,7 +71,7 @@ function mh_simple_search($buttonText = null, $formProperties=array('id'=>'simpl
     $formProperties['action'] = $uri;
     $formProperties['method'] = 'get';
     $html  = '<form ' . _tag_attributes($formProperties) . '>' . "\n";
-    $html .= '<fieldset>' . "\n\n";
+    $html .= '<fieldset>'. "\n\n";
     $html .= __v()->formText('search', $searchQuery, array('type'=>'search','name'=>'search','class'=>'textinput','placeholder'=>'Search stories'));
     $html .= __v()->formSubmit('submit_search', $buttonText);
     $html .= '</fieldset>' . "\n\n";
@@ -96,7 +96,7 @@ function mh_simple_search($buttonText = null, $formProperties=array('id'=>'simpl
 function mh_appstore_downloads(){
 	if (get_theme_option('enable_app_links')){ 
 	
-		echo '<header><h2>Downloads</h2></header>';
+		echo '<h2>Downloads</h2>';
 		
 		$ios_link = get_theme_option('ios_link');
 		echo ($ios_link ? 
@@ -128,10 +128,10 @@ function mh_appstore_footer(){
 					echo 'Get the app for <a id="apple-text-link" class="app-store" href="'.$ios_link.'">iPhone</a>';
 					}
 			elseif (($ios_link == false) && ($android_link != false)) {
-					echo 'Get the app for <a id="apple-text-link" class="app-store" href="'.$android_link.'">Android</a>';
+					echo 'Get the app for <a id="apple-text-link" class="app-store-footer" href="'.$android_link.'">Android</a>';
 					}
 			elseif (($ios_link != false)&&($android_link != false)) {
-					echo 'Get the app for <a id="apple-text-link" class="app-store" href="'.$ios_link.'">iPhone</a> and <a id="android-text-link" class="app-store" href="'.$android_link.'">Android</a>';
+					echo 'Get the app for <a id="apple-text-link" class="app-store-footer" href="'.$ios_link.'">iPhone</a> and <a id="android-text-link" class="app-store-footer" href="'.$android_link.'">Android</a>';
 					}
 				else{
 					echo 'Coming soon for iPhone and Android Devices';
@@ -147,10 +147,11 @@ function mh_appstore_footer(){
 ** TODO: make the links open into a more useful view by incorporating query params
 */
 function mh_item_map(){
-	if (function_exists('geolocation_get_location_for_item')){
-		echo geolocation_public_show_item_map('100%', '10em'); 
+	if (function_exists('geolocation_get_location_for_item')){ 
 		$location = geolocation_get_location_for_item(get_current_item(), true);
 	    if ($location) {
+	    echo geolocation_public_show_item_map('100%', '20em');
+	    
 	        $lng = $location['longitude'];
 	        $lat = $location['latitude'];
 	        $zoom = ($location['zoom_level']) ? '&z='.$location['zoom_level'] : '';	
@@ -184,7 +185,33 @@ function mh_item_map(){
 */
 function mh_the_author(){
 	if ((get_theme_option('show_author') == true) && (item('Dublin Core', 'Creator'))){
-		echo '<span class="story-meta">by: '.item('Dublin Core', 'Creator').'</span>';
+		$authors=item('Dublin Core', 'Creator', array('all'=>true));
+		$total=count($authors);
+		$index=1;
+				
+		$html='<span class="story-meta">Posted by: ';
+		foreach ($authors as $author){
+		switch ($index){
+			case ($total):
+			$delim ='';
+			break;
+
+			case ($total-1):
+			$delim =' and ';
+			break;	
+			
+			default:
+			$delim =', ';
+			break;						
+		}		
+		
+		
+			$html .= $author.$delim;
+			$index++;
+		}
+		$html .='</span>';
+		
+		echo $html;
 	}
 }
 
@@ -239,7 +266,7 @@ function mh_item_citation(){
 ** Loop through and display image files
 */
 function mh_item_images(){
-	echo '<h3>Photos</h3>';
+	echo '<h3><i class="icon-camera-retro"></i>Photos</h3>';
 	while ($file = loop_files_for_item()){
 		if ($file->hasThumbnail()) {
 			//
@@ -247,12 +274,15 @@ function mh_item_images(){
 			$photoTitle = mh_normalize_special_characters(item_file('Dublin Core', 'Title'));
 			$photoCaption= $photoTitle.': '.$photoDesc;
 			$photoCaption = strip_tags($photoCaption);
-			?>
+			
+			//===========================// ?>
 			<script>
 			function hideText(){
 				jQuery(".fancybox-title").fadeOut();
 			}	
-			jQuery(".fancybox").fancybox({
+			// checkWidth.js sets 'big' and 'small' body classes
+			// FancyBox is used only when the body class is 'big'
+			jQuery(".big .fancybox").fancybox({
 		        beforeShow: function () {
 		            if (this.title) {
 		                // Add caption close button
@@ -269,7 +299,8 @@ function mh_item_images(){
 			    }
 			});
 			</script>    
-			<?php
+			<?php //========================//
+			
 			echo display_file($file, array('imageSize' => 'fullsize','linkAttributes'=>array('title'=>$photoCaption, 'class'=>'fancybox', 'rel'=>'group'),'imgAttributes'=>array('alt'=>$photoTitle) ) );
 			$html = '';
 			$html .= ($photoTitle) ? '<h4 class="title video-title">'.$photoTitle.'</h4>' : '';	
@@ -297,7 +328,7 @@ $myaudio = array();
 		
 		if ( array_search($mime, $audioTypes) !== false ) {
 			
-			if ($index==0) echo '<h3>Audio</h3><script>audiojs.events.ready(function() {var as = audiojs.createAll();});</script>';
+			if ($index==0) echo '<h3><i class="icon-volume-up"></i>Audio</h3><script>audiojs.events.ready(function() {var as = audiojs.createAll();});</script>';
 			$index++;
 			
 			array_push($myaudio, $file);
@@ -330,7 +361,7 @@ function mh_video_files() {
 	$videoTypes = array('video/mp4','video/mpeg','video/quicktime'); 
 	$videoPoster = mh_poster_url();
 	$videoSWF= '<script> _V_.options.flash.swf = "'. WEB_ROOT .'/themes/curatescape/javascripts/video-js/video-js.swf"</script>';
-	$videoHeading = (($videoIndex==1) ? $videoSWF.'<h3>Video</h3>' : '');
+	$videoHeading = (($videoIndex==1) ? $videoSWF.'<h3><i class="icon-film"></i>Video</h3>' : '');
 	
 	while(loop_files_for_item()): 
 		$file = get_current_file();
@@ -349,35 +380,33 @@ function mh_video_files() {
 			$html .= ($videoTitle) ? '<h4 class="title video-title">'.$videoTitle.'</h4>' : '';	
 			$html .= ($videoDesc) ? '<p class="description video-description">'.$videoDesc.'</p>' : '';	
 			echo $html;	
+			echo mh_video_ResponsifyVideoScript($videoIndex);
 			$videoIndex++;
 			}
 	endwhile;	
-	?>
-	<!-- Responsify the video -->
+}
+/*
+** Script to resize the video based on desired aspect ratio and browser viewport
+** This basically iterates a separate action for each video (see mh_video_files() loop above),
+** which is not very efficient, but having more than one video per record is not very common here
+*/
+function mh_video_ResponsifyVideoScript($videoIndex, $aspectRatio='360/640'){
+	$script = '
 	<script>
-	     // Once the video is ready
-	    _V_("#video-1").ready(function(){
-	      
-	      // Store the video object
+	    _V_("#video-'.$videoIndex.'").ready(function(){
 	      var myVid = this; 
-	      
-	      // Set aspect ratio
-	      var aspectRatio = 360/640; 
-	
-	      function resizeVideoJS(){
+	      var aspectRatio = '.$aspectRatio.'; 
+	      function resizeVideoJS'.$videoIndex.'(){
 	        var width = document.getElementById(myVid.id).parentElement.offsetWidth;
 	        myVid.width(width).height( width * aspectRatio );
-	
 	      }
-	      
-	       // Initialize resizeVideoJS()
-	      resizeVideoJS();
-	      // Then on resize call resizeVideoJS()
-	      window.onresize = resizeVideoJS; 
-	
+	      resizeVideoJS'.$videoIndex.'();
+	      window.onresize = resizeVideoJS'.$videoIndex.'; 
 	    });
-	</script>
-	<?php	
+	</script>';
+	
+	return $script;	
+	
 }
 
 /*
@@ -389,7 +418,7 @@ $subjects = item('Dublin Core', 'Subject', 'all');
 		if (count($subjects) > 0){
 
 	    	echo '<h3>Subjects</h3>';
-	    	echo '<div class="subjects"><ul>';
+	    	echo '<ul>';
 	    	foreach ($subjects as $subject){
 	    		$link = WEB_ROOT;
 	    		$link .= htmlentities('/items/browse?term='); 
@@ -399,7 +428,7 @@ $subjects = item('Dublin Core', 'Subject', 'all');
 	    		$link .= htmlentities('&submit_search=Search');
 		    	echo '<li><a href="'.$link.'">'.$subject.'</a></li>';
 		    	}
-		    echo '</ul></div>';
+		    echo '</ul>';
 
 	    } 
 }
@@ -444,12 +473,12 @@ function mh_tags(){
 		if (item_has_tags()): 
 		
 			echo '<h3>Tags</h3>';
-		    echo item_tags_as_string(
-	    		$delimiter = ', ', 
-	    		$order = 'alpha', 
-	   			$tagsAreLinked = true, 
-	   	 		$item=null, 
-	    		$limit=null);
+		    echo item_tags_as_cloud(
+			    $order = 'alpha', 
+			    $tagsAreLinked = true, 
+			    $item=null, 
+			    $limit=null
+		    );
 		endif;
 }
 
@@ -521,7 +550,7 @@ function mh_reducepayload($index,$showThisMany){
 /*
 ** Display the Tours list
 */
-function mh_display_tour_items($num = 5){
+function mh_display_random_tours($num = 3){
 	
     // Get the database.
     $db = get_db();
@@ -533,25 +562,20 @@ function mh_display_tour_items($num = 5){
     $select = $table->getSelect();
     $select->from(array(), 'RAND() as rand');
     $select->where('public = 1');
-    $select->order('title ASC');
-    $select->limit($num);    
 	 
     // Fetch some items with our select.
     $items = $table->fetchObjects($select);
+    shuffle($items);
+   
+    echo '<h2>Take a Tour</h2>';
     
-	   // echo count($items);
-	    $tot = count($items);
-	   
-	    echo "<h2>Take a Tour</h2>";
-	    
-	    echo "<ul>";
-	    
-		for ($i = 0; $i < $tot; $i++) {
-	    	echo "<li><a href='" . WEB_ROOT . "/tour-builder/tours/show/id/". $items[$i]['id']."'>" . $items[$i]['title'] . "</a></li>";
-		}
-		echo "</ul>";
-		
-		echo '<p class="view-more-link"><a href="'.WEB_ROOT.'/tour-builder/tours/browse/">View All Tours</a></p>';
+	for ($i = 0; $i < $num; $i++) {
+    	echo '<article class="item-result">';
+    	echo '<h3><a href="' . WEB_ROOT . '/tour-builder/tours/show/id/'. $items[$i]['id'].'">' . $items[$i]['title'] . '</a></h3><div class="item-description">'.snippet($items[$i]['description'],0,250,"...").'</div>';
+    	echo '</article>';
+	}
+	
+	echo '<p class="view-more-link"><a href="'.WEB_ROOT.'/tour-builder/tours/browse/">View All Tours</a></p>';
 	
 	return $items;
 }
@@ -606,8 +630,8 @@ function mh_display_random_featured_item($withImage=false)
  	   $html .= '<h3>' . link_to_item($itemTitle, array(), 'show', $featuredItem) . '</h3>';
  	   
  	   // Grab the 1st Dublin Core description field (first 150 characters)
- 	   if ($itemDescription = item('Dublin Core', 'Description', array('snippet'=>150), $featuredItem)) {
- 	       $html .= '<div class="item-description">' . $itemDescription . '</div>';
+ 	   if ($itemDescription = item('Dublin Core', 'Description', array('snippet'=>550), $featuredItem)) {
+ 	       $html .= '<div class="item-description">' . strip_tags($itemDescription) . '</div>';
  	       }else{
  	       $html .= '<div class="item-description empty">Preview text not available.</div>';}
  	       
@@ -637,7 +661,7 @@ function mh_display_recent_item($num=1){
 				echo '<div class="item-thumb">'.link_to_item(item_square_thumbnail()).'</div>';
 				
 				
-				if($desc = item('Dublin Core', 'Description', array('snippet'=>180))){ 
+				if($desc = item('Dublin Core', 'Description', array('snippet'=>250))){ 
 					echo '<div class="item-description">'.$desc.'</div>';
 				}else{
 					echo '<div class="item-description">Text preview unavailable.</div>';
@@ -656,14 +680,17 @@ function mh_display_recent_item($num=1){
 */
 function mh_custom_column_home(){
 		if ( (get_theme_option('twitter_username')!=false) && (get_theme_option('home_column')!=='about')) {
-			echo '<h2>What Users Are Saying</h2>';
-			echo '<div id="twitter">';
-				echo '<ul>'.mh_get_tweets().'</ul>';
-			echo '</div>';
-			echo mh_follow_the_conversation(); 
+			$html = '<h2>What Users Are Saying</h2>';
+			$html .= '<div id="twitter">';
+				$html .= '<ul>'.mh_get_tweets().'</ul>';
+			$html .= '</div>';
 		 }else{
-			echo '<h2 class="col-heading">About</h2><p id="about">'.get_theme_option('about').'</p>';
+			$html = '<h2 class="col-heading">About</h2><p id="about">';
+			$html .= get_theme_option('about');
+			$html .= '</p>';
 			}	
+			
+			echo $html;
 }
 
 /*
@@ -746,7 +773,7 @@ function mh_poster_url()
 {
     $poster = get_theme_option('poster');
 	
-	$posterimg = $poster ? WEB_ROOT.'/archive/theme_uploads/'.$poster : img('poster.jpg');
+	$posterimg = $poster ? WEB_ROOT.'/archive/theme_uploads/'.$poster : img('poster.png');
 	
 	return $posterimg;
 }
