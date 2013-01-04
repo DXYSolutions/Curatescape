@@ -18,49 +18,6 @@ else{
 }	
 head(array('title'=>$title,'bodyid'=>'items','bodyclass'=>'browse')); 
 ?>
-<figure id="browse-view">
-
-
-
-
-	<div id="browse-map">
-		<div id="map_canvas">
-			<?php echo geolocation_scripts(); ?>
-
-			<div id="map-block">
-			<h2 id="story-map" class="visuallyhidden">Story Map</h2>
-				<?php echo geolocation_google_map('map-display', array('loadKml'=>true, 'list'=>'map-links'));?>
-			</div>
-
-			<div id="link_block" style="display:none;">
-				<div id="map-links" style="display:none;"></div><!-- Used by JavaScript -->
-			</div>
-			
-		</div> 
-	</div>
-
-
-
-	
-	<?php /*
-	echo '<div id="header-imgs">';
-	$index=1; 
-	while (loop_items() && ($index<10)): 
-		$description = item('Dublin Core', 'Description', array('snippet'=>250));
-		$tags=tag_string(get_current_item(), uri('items/browse?tags='));
-		$thumblink=link_to_item(item_square_thumbnail());
-		$fullsizelink=link_to_item(item_fullsize());
-		$titlelink=link_to_item(item('Dublin Core', 'Title'), array('class'=>'permalink'));
-		
-		echo $thumblink;
-		$index++;
-		endwhile;	
-	echo '</div>';			
-	*/?>
-		
-
-
-</figure>
 
 
 <div id="content">
@@ -112,7 +69,7 @@ head(array('title'=>$title,'bodyid'=>'items','bodyclass'=>'browse'));
 				
 				<?php if ($description): ?>
     				<div class="item-description">
-    					<?php echo $description; ?>
+    					<?php echo strip_tags($description); ?>
     				</div>
 				<?php endif; ?>
 

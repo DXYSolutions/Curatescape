@@ -78,6 +78,32 @@ display_js();
 
 <div id="wrap">
 
-<header class="main">
-<?php echo mh_global_header();?>
-</header>
+	<header class="main">	
+		<?php echo mh_global_header();?>
+		<script>
+		    jQuery("#mobile-menu-cluster").removeClass("active");
+		    jQuery("#mobile-menu-button a").click(function () {
+		      jQuery("#mobile-menu-cluster").toggleClass("active");
+		    });
+		</script>
+	</header>
+
+	
+	
+	<figure id="hero">
+		<!--div id="hm-map">
+			<div id="map_canvas">
+				<?php echo geolocation_scripts(); ?>
+	
+				<div id="map-block">
+				<h2 id="story-map" class="visuallyhidden">Story Map</h2>
+					<?php echo geolocation_google_map('map-display', array('loadKml'=>true, 'list'=>'map-links'));?>
+				</div>
+	
+				<div id="link_block" style="display:none;">
+					<div id="map-links" style="display:none;"></div>
+				</div>
+				
+			</div> 
+		</div-->	
+	</figure>

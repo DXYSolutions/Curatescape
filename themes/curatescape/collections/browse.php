@@ -1,8 +1,9 @@
 <?php
 // We don't need no stinking collections! 
-head(array('title'=>'404')); ?>
+head(array('title'=>'404','bodyid'=>'error','bodyclass'=>'collections browse error_404')); ?>
 <div id="content">
-<section class="error show">			
+<article class="error show">
+<h2>404</h2>
 
 	<div id="page-col-left">
 		<aside>
@@ -10,12 +11,13 @@ head(array('title'=>'404')); ?>
 		</aside>
 	</div>
 
+
 	<div id="primary" class="show">
-		<section id="text">	
-		    <h2>404</h2>
+		<section id="text">
 		    <p>Sorry. The page you are looking for does not exist!</p>
 		</section>
 	</div>
+
 
 	<div id="page-col-right">
 		<aside id="page-sidebar">
@@ -27,9 +29,9 @@ head(array('title'=>'404')); ?>
 			<div id="share-this">
 			<?php echo mh_share_this();?>
 			</div>
-		</aside>
+		</aside>	
 	</div>	
 
-</section>
+</article>
 </div> <!-- end content -->
 <?php foot(); ?>

@@ -7,7 +7,7 @@ if (simple_pages_is_home_page(get_current_simple_page())) {
 
 <div id="content">
 <article class="page show">
-<h2><?php echo html_escape(simple_page('title')); ?></h2>
+<h2 class="instapaper_title"><?php echo html_escape(simple_page('title')); ?></h2>
 
 	<div id="page-col-left">
 		<aside>
@@ -16,9 +16,9 @@ if (simple_pages_is_home_page(get_current_simple_page())) {
 	</div>
 
 
-	<div id="primary" class="show">
+	<div id="primary" class="show" role="main">
 		<section id="text">
-		    <?php echo eval('?>' . simple_page('text')); ?>
+		    <?php echo simple_page('text'); ?>
 		</section>    
 	</div>
 

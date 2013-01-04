@@ -12,12 +12,12 @@ head( array( 'title' => $tourTitle, 'content_class' => 'horizontal-nav',
 ?>
 
 <div id="content">
-<article class="tour show">
+<article class="tour show" role="main">
 
 	<header id="tour-header">
 	<h2 class="tour-title instapaper_title"><?php echo $tourTitle; ?></h2>
 	<?php if(tour( 'Credits' )){
-		echo '<span class="tour-meta">Posted by '.tour( 'Credits' ).'</span>';
+		echo '<span class="tour-meta">By '.tour( 'Credits' ).'</span>';
 	}?>
 	</header>
 			
@@ -28,13 +28,13 @@ head( array( 'title' => $tourTitle, 'content_class' => 'horizontal-nav',
 	<div id="primary" class="show">
 	    <section id="text">
 		   <div id="tour-description">
-		    <h2>Description</h2>
+		    <h3>Description</h3>
 		    <?php echo nls2p( tour( 'Description' ) ); ?>
 		   </div>
 		</section>
 		   
 		<section id="tour-items">
-			<h2>Locations</h2>
+			<h3>Locations</h3>
 	         <?php 
 	         $i=1;
 	         foreach( $tour->Items as $tourItem ): ?>

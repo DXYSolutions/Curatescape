@@ -1,26 +1,23 @@
 <?php head(array('bodyid'=>'items','bodyclass'=>'show','title' => item('Dublin Core', 'Title'))); ?>
 
-
 <div id="content">
 
-<article class="story item show">
+<article class="story item show" role="main">
 
 			
 	<header id="story-header">
-	<h2 class="item-title instapaper_title"><?php echo item('Dublin Core', 'Title'); ?></h2>
+	<hgroup>	
+		<h2 class="item-title instapaper_title"><?php echo item('Dublin Core', 'Title',array('index'=>0)); ?></h2>
+		<h3 class="item-subtitle"><?php echo item('Dublin Core', 'Title',array('index'=>1)); ?></h3>
+	</hgroup>	
 	<?php mh_the_author();?>
 	</header>
-
-
-	<figure id="item-map">
-	<?php mh_item_map();?>
-	</figure>
 
 	
 	<div id="item-primary" class="show">
 		<section id="text">
 
-			<div class="item-description instapaper_body">
+			<div class="item-description">
 			<h3>Description</h3>
 			<?php echo item('Dublin Core', 'Description');?>
 			</div>
@@ -29,10 +26,9 @@
 	</div><!-- end primary -->
 
 		
-	<div id="section-container-bottom">
-		<div class="section-container-inner">
+
 		<div id="item-media">
-			<section class="meta">
+			<section class="media">
 				<figure id="item-video" >
 				<?php mh_video_files();?>
 				</figure> 		
@@ -46,8 +42,7 @@
 				</figure>	
 			</section>
 		</div>
-		</div>
-	</div>	
+
 	
 		<div id="item-metadata" class="item">
 			<section class="meta">
@@ -83,4 +78,26 @@
 
 </article>
 </div> <!-- end content -->
+
+<script>
+	//Toggle the media files and their metadata to reduce scrolling on mobile	
+	var loopSelector = ['#item-video','#item-audio','#item-photos'];			
+	
+	jQuery.each(loopSelector,function(index,value){
+		jQuery(''+value+' .item-file-container').hide();
+	});
+	
+	jQuery.each(loopSelector,function(index,value){
+		jQuery('#item-media '+value+' h3 span.toggle').toggle(
+		function() {
+			jQuery(''+value+' .item-file-container').show('fast','linear');
+			jQuery('#item-media '+value+' h3 span.toggle').html('Hide <i class="icon-chevron-down"></i>');
+		}, 
+		function() {
+			jQuery(''+value+' .item-file-container').hide('fast','linear');
+			jQuery('#item-media '+value+' h3 span.toggle').html('Show <i class="icon-chevron-right"></i>');
+		})				
+	})
+</script>
+
 <?php foot(); ?>
