@@ -5,7 +5,7 @@
 function mh_global_nav(){		
 		return public_nav_main(array(
 				'Home' => uri('/'), 
-				'Stories' => uri('items'), 
+				'Stories' => uri('items/browse'), 
 				'Tours' => uri('/tour-builder/tours/browse/')));
 }
 
@@ -23,6 +23,17 @@ function mh_the_logo(){
 	}	
 }
 
+/* 
+** Link to Random item 	
+*/
+
+function random_item_link(){
+	$items = get_items(array('random' => 1), 1);
+    $item = $items[0];
+    return link_to($item, 'show', 'Show me a random story', array('id' => 'random-story-link'));
+}
+
+
 /*
 ** Global header
 ** includes nav, logo, search bar
@@ -31,9 +42,17 @@ function mh_the_logo(){
 function mh_global_header(){
 	$html ='<h1 id="site-title" class="visuallyhidden">'.link_to_home_page().'</h1>';
 
+    $html .= '<div id="mobile-logo-container" class="clearfix">';
+    
     $html .= '<div id="logo">';
     $html .= link_to_home_page(mh_the_logo());
     $html .= '</div>';
+    
+    $html  .= '<div id="mobile-menu-button"><a class="icon-th"><span class="visuallyhidden"> Menu</span></a></div>';
+    $html .= '</div>';
+	
+	
+	$html .= '<div id="mobile-menu-cluster" class="active">';
 	
 	$html .= '<nav id="primary-nav">';
     $html .= '<ul class="navigation">';
@@ -41,13 +60,23 @@ function mh_global_header(){
     $html .= '</ul>';
     $html .= '</nav>';
     
+    
+    
     $html .= '<div id="search-wrap">';
 	$html .= mh_simple_search($buttonText, $formProperties=array('id'=>'header-search'), $uri); 
+	
     $html .= '</div>';
+    
+    $html .= random_item_link();
+    
+    $html .= '</div>'; // end mobile-menu-cluster
     
     return $html;	
 	
 }
+
+
+
 
 
 /*
@@ -189,7 +218,7 @@ function mh_the_author(){
 		$total=count($authors);
 		$index=1;
 				
-		$html='<span class="story-meta">Posted by: ';
+		$html='<span class="story-meta">By: ';
 		foreach ($authors as $author){
 		switch ($index){
 			case ($total):
@@ -197,7 +226,7 @@ function mh_the_author(){
 			break;
 
 			case ($total-1):
-			$delim =' and ';
+			$delim =' <span class="amp">&amp;</span> ';
 			break;	
 			
 			default:
@@ -266,7 +295,32 @@ function mh_item_citation(){
 ** Loop through and display image files
 */
 function mh_item_images(){
-	echo '<h3><i class="icon-camera-retro"></i>Photos</h3>';
+	//===========================// ?>
+	<script>
+	function hideText(){
+		jQuery(".fancybox-title").fadeOut();
+	}	
+	// checkWidth.js sets 'big' and 'small' body classes
+	// FancyBox is used only when the body class is 'big'
+	jQuery(".big .fancybox").fancybox({
+        beforeShow: function () {
+            if (this.title) {
+                // Add caption close button
+                this.title += '<a class="fancybox-hide-text" onclick="hideText()">Hide Text</a> ';
+            }	            
+        },
+	    helpers : {
+	         title: {
+	            type: 'over'
+	        },
+	         overlay : {
+	         	locked : false
+	         	}
+	    }
+	});
+	</script>    
+	<?php //========================//
+	echo '<h3><i class="icon-camera-retro"></i>Photos <span class="toggle">Show <i class="icon-chevron-right"></i></span></h3>';
 	while ($file = loop_files_for_item()){
 		if ($file->hasThumbnail()) {
 			//
@@ -275,36 +329,14 @@ function mh_item_images(){
 			$photoCaption= $photoTitle.': '.$photoDesc;
 			$photoCaption = strip_tags($photoCaption);
 			
-			//===========================// ?>
-			<script>
-			function hideText(){
-				jQuery(".fancybox-title").fadeOut();
-			}	
-			// checkWidth.js sets 'big' and 'small' body classes
-			// FancyBox is used only when the body class is 'big'
-			jQuery(".big .fancybox").fancybox({
-		        beforeShow: function () {
-		            if (this.title) {
-		                // Add caption close button
-		                this.title += '<a class="fancybox-hide-text" onclick="hideText()">Hide Text</a> ';
-		            }	            
-		        },
-			    helpers : {
-			         title: {
-			            type: 'over'
-			        },
-			         overlay : {
-			         	locked : false
-			         	}
-			    }
-			});
-			</script>    
-			<?php //========================//
+			$html = '<div class="item-file-container">';
 			
-			echo display_file($file, array('imageSize' => 'fullsize','linkAttributes'=>array('title'=>$photoCaption, 'class'=>'fancybox', 'rel'=>'group'),'imgAttributes'=>array('alt'=>$photoTitle) ) );
-			$html = '';
+			$html .= ''.display_file($file, array('imageSize' => 'fullsize','linkAttributes'=>array('title'=>$photoCaption, 'class'=>'fancybox', 'rel'=>'group'),'imgAttributes'=>array('alt'=>$photoTitle) ) );
+			
 			$html .= ($photoTitle) ? '<h4 class="title video-title">'.$photoTitle.'</h4>' : '';	
 			$html .= ($photoDesc) ? '<p class="description video-description">'.$photoDesc.'</p>' : '';	
+			$html .= '</div>';
+			
 			echo $html;				
 	
 		} 
@@ -328,19 +360,19 @@ $myaudio = array();
 		
 		if ( array_search($mime, $audioTypes) !== false ) {
 			
-			if ($index==0) echo '<h3><i class="icon-volume-up"></i>Audio</h3><script>audiojs.events.ready(function() {var as = audiojs.createAll();});</script>';
+			if ($index==0) echo '<h3><i class="icon-volume-up"></i>Audio <span class="toggle">Show <i class="icon-chevron-right"></i></span></h3><script>audiojs.events.ready(function() {var as = audiojs.createAll();});</script>';
 			$index++;
 			
 			array_push($myaudio, $file);
-	
-			echo '<audio>
+				
+			$html = '<div class="item-file-container">';
+			$html .= '<audio>
 			<source src="'.file_download_uri($file).'" type="audio/mpeg" />
 			<h5 class="no-audio"><strong>Download Audio:</strong><a href="'.file_download_uri($file).'">MP3</a></h5>
 			</audio>';
-			
-			$html = '';
 			$html .= ($audioTitle) ? '<h4 class="title audio-title">'.$audioTitle.'</h4>' : '';	
 			$html .= ($audioDesc) ? '<p class="description audio-description">'.$audioDesc.'</p>' : '';	
+			$html .= '</div>';
 			echo $html;								
 		}	
 					
@@ -361,7 +393,7 @@ function mh_video_files() {
 	$videoTypes = array('video/mp4','video/mpeg','video/quicktime'); 
 	$videoPoster = mh_poster_url();
 	$videoSWF= '<script> _V_.options.flash.swf = "'. WEB_ROOT .'/themes/curatescape/javascripts/video-js/video-js.swf"</script>';
-	$videoHeading = (($videoIndex==1) ? $videoSWF.'<h3><i class="icon-film"></i>Video</h3>' : '');
+	$videoHeading = (($videoIndex==1) ? $videoSWF.'<h3><i class="icon-film"></i>Video <span class="toggle">Show <i class="icon-chevron-right"></i></span></h3>' : '');
 	
 	while(loop_files_for_item()): 
 		$file = get_current_file();
@@ -374,11 +406,15 @@ function mh_video_files() {
 		
 		if ( in_array($videoMime,$videoTypes) ){
 			$html = $videoHeading;
+			
+			$html .= '<div class="item-file-container">';
 			$html .= '<video width="640" height="360" id="video-'.$videoIndex.'" class="'.$videoClass.' video-js vjs-default-skin" controls poster="'.$videoPoster.'"  preload="auto" data-setup="{}">';
 			$html .= '<source src="'.$videoFile.'" type="video/mp4">'; 
 			$html .= '</video>';
 			$html .= ($videoTitle) ? '<h4 class="title video-title">'.$videoTitle.'</h4>' : '';	
 			$html .= ($videoDesc) ? '<p class="description video-description">'.$videoDesc.'</p>' : '';	
+			$html .= '</div>';
+			
 			echo $html;	
 			echo mh_video_ResponsifyVideoScript($videoIndex);
 			$videoIndex++;
@@ -523,14 +559,14 @@ function mh_share_this(){
 function mh_item_browse_subnav(){
 			if (function_exists('subject_browse_public_navigation_items')){
 			echo nav(array(
-			'All' => uri('items'), 
+			'All' => uri('items/browse'), 
 			'Tags' => uri('items/tags'), 
 			'Subjects' => uri('items/subject-browse')
 			));
 			}
 			else{
 			echo nav(array(
-			'All' => uri('items'), 
+			'All' => uri('items/browse'), 
 			'Tags' => uri('items/tags')));
 			} 	
 }
@@ -566,6 +602,7 @@ function mh_display_random_tours($num = 3){
     // Fetch some items with our select.
     $items = $table->fetchObjects($select);
     shuffle($items);
+    $num = (count($items)<$num)? count($items) : $num;
    
     echo '<h2>Take a Tour</h2>';
     
@@ -644,6 +681,7 @@ function mh_display_random_featured_item($withImage=false)
 
      return $html;
  }
+ 
 
 /*
 ** Display the most recently added item
@@ -661,7 +699,7 @@ function mh_display_recent_item($num=1){
 				echo '<div class="item-thumb">'.link_to_item(item_square_thumbnail()).'</div>';
 				
 				
-				if($desc = item('Dublin Core', 'Description', array('snippet'=>250))){ 
+				if($desc = item('Dublin Core', 'Description', array('snippet'=>200))){ 
 					echo '<div class="item-description">'.$desc.'</div>';
 				}else{
 					echo '<div class="item-description">Text preview unavailable.</div>';
@@ -678,17 +716,10 @@ function mh_display_recent_item($num=1){
 ** Display the customizable content on homepage
 ** Currently user may choose to display Twitter or About content
 */
-function mh_custom_column_home(){
-		if ( (get_theme_option('twitter_username')!=false) && (get_theme_option('home_column')!=='about')) {
-			$html = '<h2>What Users Are Saying</h2>';
-			$html .= '<div id="twitter">';
-				$html .= '<ul>'.mh_get_tweets().'</ul>';
-			$html .= '</div>';
-		 }else{
-			$html = '<h2 class="col-heading">About</h2><p id="about">';
+function mh_about_home(){
+			$html = '<h2 class="col-heading">About</h2>';
 			$html .= get_theme_option('about');
-			$html .= '</p>';
-			}	
+			$html .= '';
 			
 			echo $html;
 }
@@ -698,7 +729,7 @@ function mh_custom_column_home(){
 */ 
 function mh_custom_css(){
 	return '<style type="text/css">
-	a, a:link {color:'.mh_link_color().'}'.get_theme_option('custom_css').
+	a{color:'.mh_link_color().'}'.get_theme_option('custom_css').
 	'</style>';
 }
 
