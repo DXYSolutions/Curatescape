@@ -1,16 +1,5 @@
-<?php head(array('title'=>'Browse Items by Subject','bodyid'=>'subject-browse','bodyclass' => 'subject-browse browse current')); ?>
-<script type="text/javascript">
-    jQuery.noConflict();
-    jQuery(document).ready(function(){
-        var path = location.pathname;
-        var search = location.search;
-        var hash = location.hash;
-        var pat = path + search + hash;
+<?php head(array('title'=>'Browse Items by Subject','bodyid'=>'subject-browse','bodyclass' => 'subject-browse browse')); ?>
 
-                jQuery(".navigation a").parent().removeClass("current");
-                jQuery(".navigation a[href=" + pat  + "]").parent().addClass("current");
-        });
-</script>
 <?php
   $db = get_db();
   $select = "SELECT DISTINCT et.text
