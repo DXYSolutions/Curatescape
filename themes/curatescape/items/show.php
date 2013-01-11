@@ -57,19 +57,19 @@
 				<div id="relations">
 				<?php /* Item Relations plugin */ mh_item_relations();?>			
 				</div>
-							
+
 				<div id="cite-this">
 				<h3>Cite this Page</h3>
 				<?php echo mh_item_citation(); ?>
 				</div>	
+					
+				<div class="item-related-links">
+				<?php /*DC: Relation field*/ mh_related_links();?>
+				</div>
 				
 				<div id="share-this">
 				<?php echo mh_share_this();?>
-				</div>		
-	
-				<div class="item-related-links">
-				<?php /*DC: Relation field*/ mh_related_links();?>
-				</div>				
+				</div>										
 			</section>	
 			
 		</div>	
@@ -81,13 +81,12 @@
 
 <script>
 	//Toggle the media files and their metadata to reduce scrolling on mobile	
+	//TODO: fix conflict between videoJS and jQuery toggle
 	var loopSelector = ['#item-video','#item-audio','#item-photos'];			
 	
 	jQuery.each(loopSelector,function(index,value){
-		jQuery(''+value+' .item-file-container').hide();
-	});
+		jQuery(''+value+' .item-file-container').toggle();
 	
-	jQuery.each(loopSelector,function(index,value){
 		jQuery('#item-media '+value+' h3 span.toggle').toggle(
 		function() {
 			jQuery(''+value+' .item-file-container').show('fast','linear');
@@ -98,6 +97,9 @@
 			jQuery('#item-media '+value+' h3 span.toggle').html('Show <i class="icon-chevron-right"></i>');
 		})				
 	})
+	
+	
+	
 </script>
 
 <?php foot(); ?>
