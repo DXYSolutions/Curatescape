@@ -13,6 +13,8 @@ jQuery(document).ready(function() {
             	return this['src'].replace('square_thumbnails','fullsize'); 
             	});     
             jQuery("#item-photos .description , #item-photos .title").show();
+            
+
         	
         	//find the first image for the item and set it as the background to the #hero div
 			if (jQuery("body#items").hasClass('show small')){
@@ -22,8 +24,8 @@ jQuery(document).ready(function() {
 			      'background-size' : 'cover',
 			      'background-position' : 'center top'
 			      }
-				jQuery('#hero').css(styles); 
-			}        
+				jQuery('#hero').css(styles);
+			} //endif        
         };
 
         if ($window.width() >= breakpoint) {
@@ -42,7 +44,18 @@ jQuery(document).ready(function() {
 			      'background-position' : 'center center'
 			      }
 				jQuery('#hero').css(styles); 
-				}              
+
+
+				jQuery('h4.sib').each(function() {
+					jQuery('h4.sib').toggle(
+						function() {
+							jQuery(this).siblings('.sib').show('fast','linear');
+						}, 
+						function() {
+							jQuery(this).siblings('.sib').hide('fast','linear');
+						})
+				}); //endeach
+				} //endif              
         }
     }
 
@@ -52,4 +65,10 @@ jQuery(document).ready(function() {
     // Bind event listener
     jQuery($window).resize(checkWidth);	        
              
+//jQuery('#primary-nav li.nav-home').append('<i class="icon-home"></i>');
+//jQuery('#primary-nav li.nav-stories').append('<i class="icon-book"></i>');
+//jQuery('#primary-nav li.nav-tours').append('<i class="icon-bookmark"></i>');
 });
+
+// Scratch ============== //
+
