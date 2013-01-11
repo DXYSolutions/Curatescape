@@ -296,6 +296,7 @@ menu,
 ol,
 ul {
     padding: 0 0 0 40px;
+    list-style-type: square;
 }
 
 /*
@@ -696,20 +697,6 @@ textarea {
     *zoom: 1;
 }
 
-/* ==========================================================================
-   EXAMPLE Media Queries for Responsive Design.
-   Theses examples override the primary ('mobile first') styles.
-   Modify as content requires.
-   ========================================================================== */
-
-@media only screen and (min-width: 35em) {
-    /* Style adjustments for viewports that meet the condition */
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio: 1.5),
-       only screen and (min-resolution: 144dpi) {
-    /* Style adjustments for high resolution devices */
-}
 
 /* ==========================================================================
    Print styles.
@@ -722,14 +709,46 @@ textarea {
         color: #000 !important; /* Black prints faster: h5bp.com/s */
         box-shadow: none !important;
         text-shadow: none !important;
+        overflow: visible !important;
+        position: static !important;
     }
+    
+    /*Reset layout*/
+    body,#wrap,article.story.show, #content, #story-header, #item-primary.show, #item-metadata,#item-media,#item-file-container,#h4.title,p.description{
+	    width:100% !important;
+	    margin: auto !important;
+	    float: none !important;
+	    padding: 0 !important;
+    }
+    
+    /*Undo hidden states*/
+    #item-photos,#item-file-container,#h4.title,p.description{
+	    display: inline-block !important;
+	    visibility: visible !important;
+    }
+        
+    /* Skip sections that don't need to be printed */
+    header,#hero,footer,#share-this,#item-video,#item-audio,h3 i,h4 i,a.edit{
+	    display: none !important;
+	    visibility: collapse !important;
+	    height: 0 !important;
+	    width: 0 !important;
+    }
+    
+    /* Tidy up inline images */
+    .fancybox img,#item-photos img,.item-file img, .big #item-photos img, .small #item-photos img, img {
+        display: block !important;
+        clear: left !important;
+    }
+    
 
     a,
     a:visited {
         text-decoration: underline;
     }
 
-    a[href]:after {
+    a[href]:after,
+    #item-metadata .item-related-links a[href]:after {
         content: " (" attr(href) ")";
     }
 
@@ -738,9 +757,11 @@ textarea {
     }
 
     /*
-     * Don't show links for images, or javascript/internal links
+     * Don't show links for images, metadata links, or javascript/internal links
      */
 
+    #item-media a[href]:after,
+    #item-metadata a[href]:after,
     .ir a:after,
     a[href^="javascript:"]:after,
     a[href^="#"]:after {
