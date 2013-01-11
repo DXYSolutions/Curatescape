@@ -17,7 +17,9 @@
 </footer>
 
 </div><!--end wrap-->
+<?php
 
+?>
 </body>
 
 </html>

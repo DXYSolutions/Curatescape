@@ -27,7 +27,7 @@
 // Are we viewing the item record? If so, queue up the following JS and CSS...
 $itemsShow = ( ($bodyid == 'items') && ($bodyclass == 'show') ) ? true : false;
 if($itemsShow){
-	queue_js('video-js/video.min');
+	//queue_js('video-js/video.min'); // loaded via custom.php: mh_video_files()
 	queue_js('audiojs/audiojs/audio.min');
 	queue_js('fancybox/source/jquery.fancybox');
 	queue_css('fancybox/source/jquery.fancybox', 'all', $conditional, 'javascripts');
@@ -42,6 +42,7 @@ if($stealthHome){
 
 <!-- Stylesheets -->
 <?php 
+// also returns conditional styles from queue above
 queue_css('screen');
 queue_css('print','print');
 display_css();
@@ -52,6 +53,7 @@ display_css();
 
 <!-- JavaScripts -->
 <?php
+// also returns conditional scripts from queue above
 queue_js('modernizr'); 
 queue_js('check-width');
 display_js();
