@@ -140,10 +140,14 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
 .icon-github:before               { content: "\f09b"; }
 .icon-map-marker:before           { content: "\f041"; }
 .icon-search:before               { content: "\f002"; }
-.icon-info-sign:before            { content: "\f05a"; }
 .icon-th:before 				  { content: "\f00a"; }
 .icon-chevron-down:before         { content: "\f078"; }
 .icon-chevron-right:before        { content: "\f054"; }
+.icon-reorder:before 			  { content: "\f0c9"; }
+.big .icon-info-sign:before		  { content: "\f05a";}
+.big .icon-home:before		      { content: "\f015";}
+.big .icon-book:before		      { content: "\f02d";}
+.big .icon-bookmark:before		  { content: "\f02e";}
 
 
 h3 .icon-camera-retro:before,
@@ -162,11 +166,16 @@ h3 .icon-github:before,
 }
 
 .icon-chevron-down:before,
-.icon-chevron-right:before{
+.icon-chevron-right:before,
+.big .icon-info-sign:before{
 	padding-left: .5em;
 }
 
-
+.icon-home:before,
+.icon-book:before,
+.icon-bookmark:before{
+	padding: 0 .5em;
+}
 
 /* ===== NO JS ===== */
 #no-js-message{display: none;visibility: hidden;height:0}
@@ -197,10 +206,10 @@ body,#wrap,#search-wrap,nav,#hero,header.main{
 }
 
 #mobile-menu-cluster{
-    transition:all .5s ease; 
-    -o-transition:all .5s ease; 
-    -moz-transition:all .5s ease; 
-    -webkit-transition:all .5s ease;	
+    transition:all .25s linear; 
+    -o-transition:all .25s linear; 
+    -moz-transition:all .25s linear; 
+    -webkit-transition:all .25s linear;	
 }
 
 /* Links */
@@ -238,6 +247,17 @@ a, h1 a, h2 a, h3 a, h4 a, h5 a{
     hyphens: none;		
 }
 
+.csshyphens #content{text-align: justify;}
+
+
+blockquote{
+    font-family: "Arial Narrow","Franklin Gothic Medium","Arial","Helvetica", sans-serif;
+    font-size: large;
+    font-style: italic;
+    margin: 1em 2em;
+    text-shadow: 0.01em 0.025em 0 #fff;
+}
+
 h1, h2, h3, h4, h5 {text-shadow: 0.01em 0.025em 0 #fff;}
 h1 a, h2 a, h3 a, h4 a, h5 a, nav a, a.item-map-link{border-bottom: 0px none transparent;}
 
@@ -267,6 +287,8 @@ span.amp {
   font-style: italic;
   }
   
+.item-subtitle{margin-bottom: 0.5em;}  
+  
 .item-description:first-child:first-letter,
 .tour-description:first-child:first-letter, 
 #about-text:first-child:first-letter { float: left; font-size: 4em; line-height: 0.5em; padding-top: .125em; padding-right: .115em; padding-left: 0; font-family: "Baskerville", "Palatino", "Book Antiqua", serif; }  
@@ -275,7 +297,7 @@ span.amp {
 
 /*HEADER*/
 
-#hero{height:20em; background: none center top no-repeat #ccc;clear: both;background-size: cover;}
+#hero{height:20em; background: url("../images/placeholder.png") center center no-repeat #ccc;clear: both;background-size: auto;}
 
 
 
@@ -399,6 +421,7 @@ figure#home-map{}
 /* LOGO */
 #logo {text-align: center;padding-top:1em;max-width: 95%;}
 #logo img{max-width: 100%;}
+#logo a{border-bottom: 0px none transparent;}
 
 
 
@@ -414,7 +437,8 @@ figure#home-map{}
 #recent-story .item-text,#featured-story .item-text{}
 
 #featured-story, #about-text{display: block; clear: both;}
-#featured-story .item-thumb img{clear:both;max-width: 100%; margin: 0 auto 1em;display: inline-block;}
+#featured-story .item-thumb {width: 100%;max-height:25em;overflow: hidden;margin: 0 auto 1em;display: inline-block;clear: both;}
+#featured-story .item-thumb img{width: 100%; max-width: 100%;}
 #featured-story .item-description,#featured-story h3{clear: both;display: inline-block; width: 100%;}
 
 .view-more-link {width: 100%; text-align: right;border-bottom: 1px solid #ccc;display: inline-block;}
@@ -486,12 +510,15 @@ a.fancybox-close{text-decoration: none; border-bottom: 0px none transparent;}
 	cursor: pointer;
 }
 
+body.big #item-media h3 span.toggle{display: none !important;}
+body.big .item-file-container{display: block !important;}
+
 .item-file-container{}
 .item-file img{width: 100%; height:auto;}
 
 .item-map-link {font-size: smaller;float: left;color:#555;padding: .25em; position: inherit;}
 
-#item-photos{display: inline-block; clear: both;width:100%;}
+#item-photos{display: inline-block; clear: both;width:100%; margin-bottom: 1em;}
 .big #item-photos img{float:left; width:31%;padding:1% 1% 0 0; display: inline;}
 
 /* We use the Modernizr generatedcontent class to determine of the browser can transform unordered bullet lists into comma-separated lists ... We can't do this in HTML because some core and plugin data can only output list items */
@@ -550,6 +577,7 @@ a.fancybox-close{text-decoration: none; border-bottom: 0px none transparent;}
 
 
 /* STREAMING MEDIA */
+.video-js { max-width: 100% !important;}
 video{max-width: 100%; height:auto}
 #item-video .first {}
 #item-video .not-first {} 
@@ -575,8 +603,8 @@ footer.main p{font-size: smaller;}
 /* ===== MEDIA QUERIES for modern, non-mobile browsers ===== */
 
 
-@media only screen and (max-width: 25em) { /* smaller phone viewport */
-	#wrap:before{content:'25/400-';float:left; position: fixed; bottom: 0; left: 0; padding: .5em 1em .25em .5em;color: white; background: #222; border-top-right-radius: 1em;} /* <--- for testing */
+@media only screen and (max-width: 25em) { /* <400px, smaller phone viewport */
+	#wrap:before{content:'25-';float:left; position: fixed; bottom: 0; left: 0; padding: .5em 1em .25em .5em;color: white; background: #222; border-top-right-radius: 1em;} /* <--- for testing */
 		
 	#mobile-logo-container{position: relative;}
 	#logo{max-width: 100%;padding: 0;}
@@ -642,7 +670,7 @@ footer.main p{font-size: smaller;}
 			border-color: #ccc;
 			margin: .25em auto .25em;
 			max-width: none;
-			width: 85%}
+			width: 92%}
 		#mobile-menu-cluster input#submit_search{
 			display: none;
 			visibility:hidden; 
@@ -656,8 +684,8 @@ footer.main p{font-size: smaller;}
 	
 }
 
-@media only screen and (min-width: 25em) { /* begin scaling up for larger phone or smaller tablet viewport */
-	#wrap:before{content:'25/400+';float:left; position: fixed; bottom: 0; left: 0; padding: .5em 1em .25em .5em;color: white; background: #333; border-top-right-radius: 1em;} /* <--- for testing */
+@media only screen and (min-width: 25em) { /* 400px+, begin scaling up for larger phone or smaller tablet viewport */
+	#wrap:before{content:'25+';float:left; position: fixed; bottom: 0; left: 0; padding: .5em 1em .25em .5em;color: white; background: #333; border-top-right-radius: 1em;} /* <--- for testing */
 	
 	#wrap{max-width:45em;}
 	
@@ -666,30 +694,116 @@ footer.main p{font-size: smaller;}
 	
 }
 
-@media only screen and (min-width: 45em) { /* typical tablet viewport -- 2 col */
-	#wrap:before{content:'45/720+';float:left; position: fixed; bottom: 0; left: 0; padding: .5em 1em .25em .5em;color: white; background: #444; border-top-right-radius: 1em;} /* <--- for testing */
+@media only screen and (min-width: 45em) { /* 720px+, typical tablet viewport -- 2 col */
+	#wrap:before{content:'45+';float:left; position: fixed; bottom: 0; left: 0; padding: .5em 1em .25em .5em;color: white; background: #444; border-top-right-radius: 1em;} /* <--- for testing */
 		
 	
-	/* Hide media captions, which are now revealed on-demand with jQuery */
-	#item-audio h4,#item-video h4,#item-audio .description,#item-video .description{
-		display: none; visibility: hidden;
-		}
+	#mobile-logo-container{float:left;margin-bottom: -3em;max-width: 60%;}
+	#mobile-menu-cluster{float:right;margin-top: 2.25em;max-width: 40%;}
 	
+	input#search{width: 100%;border-color: #ccc;}
+	input#submit_search{display: none;visibility: hidden;}
+
+	#item-media h3{margin-top: 0;}
+	
+	#item-media p.description{
+		padding: 0;
+		font-size: smaller;
+		line-height: 1.35em;
+		display: none;
+	}
+	#item-media h4.title{
+		margin: 0.25em;
+		font-size: smaller;
+		margin: 0;
+		padding: 0;
+		color:#777;
+		font-weight: normal;
+		cursor: pointer;
+		text-align: right;
+	}
+	
+	#item-video .item-file-container, #item-audio .item-file-container{margin-bottom: 1em;}	
+	
+	#item-media p.description,#item-media p.description:after{z-index: 1;} /* fixes display bug where audio progress bar sits above the div... only effects items with multiple audio files */
+
+	/* creates triangle */
+	#item-media p.description {
+	   position:relative;
+	   margin:1em 0 3em;
+	   background: #333;
+	   color:#fff;
+	   padding:.5em;
+	   text-shadow: 0.01em 0.025em 0 #000;
+	   max-width: 65%;
+	   float: right;
+	   }	
+	#item-media p.description:after {
+	   content:"";
+	   display:block; /* reduce the damage in FF3.0 */
+	   position:absolute;
+	   top:-15px;
+	   right:5%;
+	   width:0;
+	   border-width: 0 0 15px 15px;
+	   border-style:solid;
+	   border-color:#333 transparent;
+	}	
 	
 
 }
 
-@media only screen and (min-width: 60em) { /* desktop/laptop viewport -- 3 col*/
-	#wrap:before{content:'70/960+';float:left; position: fixed; bottom: 0; left: 0; padding: .5em 1em .25em .5em;color: white; background: #555; border-top-right-radius: 1em;} /* <--- for testing */
+@media only screen and (min-width: 60em) { /* 960px+, typical desktop/laptop viewport -- 3 col*/
+	#wrap:before{content:'60+';float:left; position: fixed; bottom: 0; left: 0; padding: .5em 1em .25em .5em;color: white; background: #555; border-top-right-radius: 1em;} /* <--- for testing */
 
 	#wrap{max-width:60em;}
 	#share-this{display: block; visibility: visible;} /* bring it back for "desktops" */
+	#share-this a{border-bottom: 0px none transparent;}
+	
+	header.main, #content, footer.main{padding: 0 3%;}
+	
+	#hero{float:right;clear: right;width: 70%;margin-bottom: 2em;margin-right: 3%}
+	#mobile-logo-container{max-width: 35%;}
+	#mobile-menu-cluster{clear: right;max-width:65%;width: 65%;}
+	#mobile-logo-container{float: left;position: relative;}
+	nav#primary-nav ul{float: left;margin-left: 5%;}
+	#search-wrap{text-align: right;margin: .5em 0em 0em;}
+	input#search{width: 72.5%;}
+	
+	
+	#recent-story,
+	#featured-story,
+	#about-text,
+	#home-tours,
+	#about-text,
+	#downloads{}
+	
+		
+	#story-header,#item-primary.show,#item-metadata{float:left;width:65%;}
+	#item-media{
+		float:right;
+		width:30%;
+		color:#fff;
+		background: #333;
+		padding: 1.5%;
+		margin-right: -3%;
+		}
+	#item-media h3, #item-media h4{color:#eaeaea; text-shadow: 0.01em 0.025em 0 #000;}	
+	
+	#item-media p.description{background: #eaeaea;color:#333;text-shadow: 0.01em 0.025em 0 #fff;	    max-width: 95%;}
+	#item-media p.description:after {
+		border-color:#eaeaea transparent;
+	    left:15px;
+		}	
+		
+
+		
 
 	
 }
 
-@media only screen and (min-width: 80em) { /* widescreen desktop/laptop viewport */
-	#wrap:before{content:'80/1280+';float:left; position: fixed; bottom: 0; left: 0; padding: .5em 1em .25em .5em;color: white; background: #666; border-top-right-radius: 1em;} /* <--- for testing */
+@media only screen and (min-width: 80em) { /* 1280px+, larger widescreen desktop/laptop viewport */
+	#wrap:before{content:'80+';float:left; position: fixed; bottom: 0; left: 0; padding: .5em 1em .25em .5em;color: white; background: #666; border-top-right-radius: 1em;} /* <--- for testing */
 	
 	
 	

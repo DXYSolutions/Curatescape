@@ -48,7 +48,7 @@ function mh_global_header(){
     $html .= link_to_home_page(mh_the_logo());
     $html .= '</div>';
     
-    $html  .= '<div id="mobile-menu-button"><a class="icon-th"><span class="visuallyhidden"> Menu</span></a></div>';
+    $html  .= '<div id="mobile-menu-button"><a class="icon-reorder"><span class="visuallyhidden"> Menu</span></a></div>';
     $html .= '</div>';
 	
 	
@@ -370,8 +370,8 @@ $myaudio = array();
 			<source src="'.file_download_uri($file).'" type="audio/mpeg" />
 			<h5 class="no-audio"><strong>Download Audio:</strong><a href="'.file_download_uri($file).'">MP3</a></h5>
 			</audio>';
-			$html .= ($audioTitle) ? '<h4 class="title audio-title">'.$audioTitle.'</h4>' : '';	
-			$html .= ($audioDesc) ? '<p class="description audio-description">'.$audioDesc.'</p>' : '';	
+			$html .= ($audioTitle) ? '<h4 class="title audio-title sib">'.$audioTitle.' <i class="icon-info-sign"></i></h4>' : '';	
+			$html .= ($audioDesc) ? '<p class="description audio-description sib">'.$audioDesc.'</p>' : '';	
 			$html .= '</div>';
 			echo $html;								
 		}	
@@ -392,8 +392,9 @@ function mh_video_files() {
 	$videoIndex = 1;
 	$videoTypes = array('video/mp4','video/mpeg','video/quicktime'); 
 	$videoPoster = mh_poster_url();
+	$videoJS = js('video-js/video.min');
 	$videoSWF= '<script> _V_.options.flash.swf = "'. WEB_ROOT .'/themes/curatescape/javascripts/video-js/video-js.swf"</script>';
-	$videoHeading = (($videoIndex==1) ? $videoSWF.'<h3><i class="icon-film"></i>Video <span class="toggle">Show <i class="icon-chevron-right"></i></span></h3>' : '');
+	$videoHeading = (($videoIndex==1) ? $videoJS.$videoSWF.'<h3><i class="icon-film"></i>Video <span class="toggle">Show <i class="icon-chevron-right"></i></span></h3>' : '');
 	
 	while(loop_files_for_item()): 
 		$file = get_current_file();
@@ -411,8 +412,8 @@ function mh_video_files() {
 			$html .= '<video width="640" height="360" id="video-'.$videoIndex.'" class="'.$videoClass.' video-js vjs-default-skin" controls poster="'.$videoPoster.'"  preload="auto" data-setup="{}">';
 			$html .= '<source src="'.$videoFile.'" type="video/mp4">'; 
 			$html .= '</video>';
-			$html .= ($videoTitle) ? '<h4 class="title video-title">'.$videoTitle.'</h4>' : '';	
-			$html .= ($videoDesc) ? '<p class="description video-description">'.$videoDesc.'</p>' : '';	
+			$html .= ($videoTitle) ? '<h4 class="title video-title sib">'.$videoTitle.' <i class="icon-info-sign"></i></h4>' : '';	
+			$html .= ($videoDesc) ? '<p class="description video-description sib">'.$videoDesc.'</p>' : '';	
 			$html .= '</div>';
 			
 			echo $html;	
@@ -729,7 +730,7 @@ function mh_about_home(){
 */ 
 function mh_custom_css(){
 	return '<style type="text/css">
-	a{color:'.mh_link_color().'}'.get_theme_option('custom_css').
+	a,blockquote{color:'.mh_link_color().'}'.get_theme_option('custom_css').
 	'</style>';
 }
 
